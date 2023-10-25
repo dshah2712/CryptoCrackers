@@ -1,3 +1,4 @@
+{% load socialaccount %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,11 +8,15 @@
 <body>
 	<div class="container">
 		<h1>Login</h1>
-		<form action="" method="post">
+		<form action="{% url 'CryptoCrackers:process_form' %}" method="post">
+            {% csrf_token %}
 			<input type="text" id="username" name="username" placeholder="Email" required>
 			<input type="password" id="password" name="password" placeholder="Password" required>
 
 			<input type="submit" value="Log in" class="login-button ">
+
+            <button><a href="{% provider_login_url "google" %}">Google</a></button>
+
 		</form>
         <div class="signup">
 			<p>Don't have an account? <a href="http://localhost:8000/signup">Sign up</a></p>
