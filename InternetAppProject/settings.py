@@ -15,7 +15,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+TEMPLATE_DIR = BASE_DIR / "templates"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -38,7 +38,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'CryptoCrackers',
+    "django.contrib.sites",
+    'CryptoCrackers.apps.CryptocrackersConfig',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
 ]
 
 MIDDLEWARE = [
@@ -49,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware"
 ]
 
 ROOT_URLCONF = "InternetAppProject.urls"
@@ -56,7 +63,8 @@ ROOT_URLCONF = "InternetAppProject.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates', BASE_DIR],
+        "DIRS": [BASE_DIR / 'templates', BASE_DIR]
+        ,
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -68,12 +76,14 @@ TEMPLATES = [
         },
     },
 ]
+AUTHENTICATION_BACKENDS = [
 
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+]
 WSGI_APPLICATION = "InternetAppProject.wsgi.application"
-# AUTHENTICATION_BACKENDS = [
-#     'CryptoCrackers.backend.CustomUserAuthBackend',
-#
-# ]
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -120,7 +130,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -130,3 +140,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_DIRS = [
     BASE_DIR / "CryptoCrackers/../static",
 ]
+
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            'profile',
+            'email',],
+        "AUTH PARAMS":{
+            "access_type": "online",
+        }
+    }
+}
