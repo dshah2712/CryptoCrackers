@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'CryptoCrackers.apps.CryptocrackersConfig',
+    'CryptoCrackers',
 ]
 
 MIDDLEWARE = [
@@ -56,8 +56,7 @@ ROOT_URLCONF = "InternetAppProject.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates', BASE_DIR]
-        ,
+        "DIRS": [BASE_DIR / 'templates', BASE_DIR],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -71,7 +70,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "InternetAppProject.wsgi.application"
-
+# AUTHENTICATION_BACKENDS = [
+#     'CryptoCrackers.backend.CustomUserAuthBackend',
+#
+# ]
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
