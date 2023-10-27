@@ -2,6 +2,9 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render,redirect
+from .forms import  LoginForm,RegisterForm
+from django.contrib.auth.hashers import make_password
+
 from django.http import HttpResponse
 def index(request):
     if request.user.is_authenticated:
@@ -17,9 +20,23 @@ def index(request):
 
     return render(request, 'FrontEnd/index.html')
 
-def login(request):
-    return render(request, 'FrontEnd/login.html')
+# def login(request):
+#     return render(request, 'FrontEnd/login.html')
 
+def login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(request
+                                , username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            if user:
+                login(request, user)
+                return redirect('/')
+            else:
+                form.add_error(None, 'Invalid login credentials')
+    else:
+        form = LoginForm()
+    return render(request, 'FrontEnd/login.html', {'form': form})
 
 def process_form(request):
     print("inside process form")
@@ -36,4 +53,13 @@ def process_form(request):
 
 
 def signup(request):
-    return render(request, 'FrontEnd/signup.html')
+    if request.method == 'POST':
+        form = RegisterForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.password = make_password(form.cleaned_data['password'])
+            user.save()
+            return redirect('/login/')
+    else:
+        form = RegisterForm()
+    return render(request, 'FrontEnd/signup.html', {'form': form})
