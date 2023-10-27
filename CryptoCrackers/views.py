@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render,redirect
 from .forms import  LoginForm,RegisterForm
 from django.contrib.auth.hashers import make_password
