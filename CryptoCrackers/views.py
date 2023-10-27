@@ -1,10 +1,11 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render,redirect
 from .forms import  LoginForm,RegisterForm
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
+from .models import UserDetails
 
 from django.http import HttpResponse
 def index(request):
@@ -24,17 +25,23 @@ def index(request):
 # def login(request):
 #     return render(request, 'FrontEnd/login.html')
 
-def login(request):
+def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            user = authenticate(request
-                                , username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-            if user:
-                login(request, user)
-                return redirect('/')
-            else:
-                form.add_error(None, 'Invalid login credentials')
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            try:
+                user = UserDetails.objects.get(username=username)
+                if check_password(password, user.password):
+                    # Manually set the user's ID in the session to log them in
+                    request.session['_user_id'] = user.id
+                    return redirect('/')
+                else:
+                    form.add_error(None, 'Invalid login credentials')
+            except UserDetails.DoesNotExist:
+                form.add_error(None, 'User does not exist')
     else:
         form = LoginForm()
     return render(request, 'FrontEnd/login.html', {'form': form})
@@ -53,7 +60,7 @@ def process_form(request):
         return render(request, 'FrontEnd/login.html')
 
 
-def signup(request):
+def user_signup(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
