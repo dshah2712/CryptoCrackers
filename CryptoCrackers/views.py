@@ -1,7 +1,4 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .forms import  LoginForm,RegisterForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
@@ -18,14 +15,24 @@ def index(request):
             google_data = google_account.extra_data
             print("google account details", google_data)
             google_email = google_data.get('email')
-            google_name = google_data.get('name')
+            try:
+                user = UserDetails.objects.get(username=google_email)
+                if user:
+                    print("User exist")
+                else:
+                    print("User does not else exist")
+
+            except UserDetails.DoesNotExist:
+                newGoogleUser = UserDetails(username=google_email,first_name=google_data.get('given_name'),last_name=google_data.get('family_name'),email=google_email)
+                newGoogleUser.save()
+                print("New User created")
+
+
     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
     print(coin_list)
 
     return render(request, 'FrontEnd/index.html',{'coins': coin_list})
 
-# def login(request):
-#     return render(request, 'FrontEnd/login.html')
 
 def user_login(request):
     if request.method == 'POST':
@@ -36,17 +43,24 @@ def user_login(request):
 
             try:
                 user = UserDetails.objects.get(username=username)
-                if check_password(password, user.password):
-                    # Manually set the user's ID in the session to log them in
-                    request.session['_user_id'] = user.id
-                    return redirect('/')
-                else:
-                    form.add_error(None, 'Invalid login credentials')
+                print("user details are:",user.password)
+                if user:
+                    if user.password is None:
+                        form.add_error(None, 'Google Auth Sign In Required')
+                    else:
+                        if check_password(password, user.password):
+                            # Manually set the user's ID in the session to log them in
+                            request.session['_user_id'] = user.id
+                            return redirect('/')
+                        else:
+                            form.add_error(None, 'Invalid login credentials')
+
             except UserDetails.DoesNotExist:
                 form.add_error(None, 'User does not exist')
     else:
         form = LoginForm()
     return render(request, 'FrontEnd/login.html', {'form': form})
+
 
 def process_form(request):
     print("inside process form")
