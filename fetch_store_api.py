@@ -54,7 +54,6 @@ def fetch_and_store_crypto_data():
                         atl=data['atl'],
                         atl_change_percentage=data['atl_change_percentage'],
                         atl_date=data['atl_date'],
-                        roi=data['roi'],
                         last_updated=data['last_updated']
                     )
                     crypto.save()

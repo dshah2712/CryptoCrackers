@@ -5,7 +5,7 @@ from django.shortcuts import render,redirect
 from .forms import  LoginForm,RegisterForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
-from .models import UserDetails
+from .models import UserDetails,CryptoCurrency
 
 from django.http import HttpResponse
 def index(request):
@@ -19,8 +19,10 @@ def index(request):
             print("google account details", google_data)
             google_email = google_data.get('email')
             google_name = google_data.get('name')
+    coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
+    print(coin_list)
 
-    return render(request, 'FrontEnd/index.html')
+    return render(request, 'FrontEnd/index.html',{'coins': coin_list})
 
 # def login(request):
 #     return render(request, 'FrontEnd/login.html')

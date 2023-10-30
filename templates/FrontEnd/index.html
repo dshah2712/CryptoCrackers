@@ -6,7 +6,7 @@
     <title>Coin Search</title>
     <link rel="stylesheet" href="../../static/css/styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../../static/script.js" defer></script>
+{#    <script src="../../static/script.js" defer></script>#}
 </head>
 <body>
     
@@ -17,7 +17,7 @@
             <a href="#">Services</a>
             <a href="#">Products</a>
             <a href="#">Contact</a>
-            <div class="profile-section">
+        <div class="profile-section">
     <div class="profile-section" style="position: relative;">
     <img src="../../static/person.svg" alt="Profile Image" id="profile-image">
     <div class="dropdown-content" id="dropdown" style="display: none; position: absolute; background-color: #a71212; z-index: 1; right: 0; top: 100%; width: 200px">
@@ -26,7 +26,7 @@
         <a id="dashboard-link" style="display: none;">Dashboard</a>
     </div>
 </div>
-</div>
+    </div>
         <header>
             <h1>Coin Search</h1>
         </header>
@@ -42,7 +42,19 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Rows will be populated using jQuery -->
+                {% for data in coins %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <img src="{{ data.image }}" alt="{{ data.symbol }}" width="30" height="30">
+                        {{ data.symbol }}
+                    </td>
+                    <td>{{ data.current_price }}</td>
+                    <td>{{ data.price_change_percentage_24h }}</td>
+                    <td>{{ data.total_volume }}</td>
+                    <td>{{ data.market_cap }}</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
