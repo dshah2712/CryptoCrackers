@@ -17,6 +17,12 @@
             <a href="#">Services</a>
             <a href="#">Products</a>
             <a href="#">Contact</a>
+        <select id="currencySelector">
+            <option value="usd" selected>USD</option>
+            <option value="cad">CAD</option>
+            <option value="eur">EUR</option>
+        </select>
+
         <div class="profile-section">
     <div class="profile-section" style="position: relative;">
     <img src="../../static/person.svg" alt="Profile Image" id="profile-image">
@@ -35,7 +41,9 @@
                 <tr>
                     <th>#</th>
                     <th>Coin</th>
-                    <th>Price</th>
+                    <th class="price price-usd">Price (USD)</th>
+                    <th class="price price-cad" style="display:none;">Price (CAD)</th>
+                    <th class="price price-eur" style="display:none;">Price (EUR)</th>
                     <th>24h</th>
                     <th>Volume</th>
                     <th>Mkt Cap</th>
@@ -49,7 +57,9 @@
                         <img src="{{ data.image }}" alt="{{ data.symbol }}" width="30" height="30">
                         {{ data.symbol }}
                     </td>
-                    <td>{{ data.current_price }}</td>
+                    <td class="price price-usd">{{ data.current_price }}</td>
+                    <td class="price price-cad" style="display:none;">{{ data.current_price_cad }}</td>
+                    <td class="price price-eur" style="display:none;">{{ data.current_price_eur }}</td>
                     <td>{{ data.price_change_percentage_24h }}</td>
                     <td>{{ data.total_volume }}</td>
                     <td>{{ data.market_cap }}</td>
@@ -60,6 +70,14 @@
     </div>
     <script>
         $(document).ready(function () {
+                $('#currencySelector').change(function () {
+               var selectedCurrency = $(this).val().toLowerCase();
+                console.log(selectedCurrency)
+                $('.price').hide();
+
+                $('.price-' + selectedCurrency).show();
+            });
+
             const isLoggedIn = false;
     
             // Show/hide options based on login status
