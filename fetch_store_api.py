@@ -35,6 +35,8 @@ def fetch_and_store_crypto_data():
                         name=data['name'],
                         image=data['image'],
                         current_price=data['current_price'],
+                        current_price_cad=data['current_price'] * 1.39,
+                        current_price_eur=data['current_price'] * 0.94,
                         market_cap=data['market_cap'],
                         market_cap_rank=data['market_cap_rank'],
                         fully_diluted_valuation=data['fully_diluted_valuation'],

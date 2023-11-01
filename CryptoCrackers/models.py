@@ -18,6 +18,8 @@ class CryptoCurrency(models.Model):
     name = models.CharField(max_length=100)
     image = models.URLField()
     current_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    current_price_cad = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    current_price_eur = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     market_cap = models.IntegerField()
     market_cap_rank = models.PositiveIntegerField()
     fully_diluted_valuation = models.IntegerField(blank=True, null=True)
