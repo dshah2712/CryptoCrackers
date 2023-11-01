@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class UserDetails(models.Model):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(max_length=255, unique=True)
@@ -44,3 +43,5 @@ class CryptoCurrency(models.Model):
 
     def __str__(self):
         return self.name
+
+#Profile modles

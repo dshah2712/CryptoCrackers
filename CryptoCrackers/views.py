@@ -75,7 +75,6 @@ def process_form(request):
         # Handle GET requests or other HTTP methods if needed
         return render(request, 'FrontEnd/login.html')
 
-
 def user_signup(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
