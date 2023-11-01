@@ -24,6 +24,18 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(),required=True)
 
 
+class ForgotPasswordForm(forms.Form):
+    username = forms.CharField(required=True)
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+    )
+    confirm_password = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+    )
+
+
 def _init_(self, *args, **kwargs):
     super(RegisterForm, self)._init_(*args, **kwargs)
     self.fields['first_name'].required = True

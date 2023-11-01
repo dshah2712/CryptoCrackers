@@ -1,11 +1,12 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .forms import  LoginForm,RegisterForm
+from .forms import  LoginForm,RegisterForm,ForgotPasswordForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from .models import UserDetails,CryptoCurrency
-
+from fetch_store_api import fetch_and_store_crypto_data
 from django.http import HttpResponse
 def index(request):
+    # fetch_and_store_crypto_data()
     if request.user.is_authenticated:
         # Access user data from Google OAuth
         google_account = request.user.socialaccount_set.filter(provider='google').first()
@@ -26,7 +27,6 @@ def index(request):
                 newGoogleUser = UserDetails(username=google_email,first_name=google_data.get('given_name'),last_name=google_data.get('family_name'),email=google_email)
                 newGoogleUser.save()
                 print("New User created")
-
 
     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
     print(coin_list)
@@ -87,3 +87,37 @@ def user_signup(request):
     else:
         form = RegisterForm()
     return render(request, 'FrontEnd/signup.html', {'form': form})
+
+
+def forgot_password(request):
+    if request.method == 'POST':
+        form = ForgotPasswordForm(request.POST, request.FILES)
+
+        # print("forgot password")
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            confirm_password = form.cleaned_data['confirm_password']
+            try:
+                user = UserDetails.objects.get(username=username)
+                print("user details are:",user.password)
+
+                if user.password is None:
+                        form.add_error(None, 'Google Auth Sign In Required')
+                else:
+                    if password == confirm_password:
+                        print("pass match")
+                        user.password = make_password(password)
+                        user.save()
+                        # print("new pass: ",user.password)
+                        return redirect('/login/')
+                    else:
+                        print("pass not match")
+                        form.add_error(None, 'Password does not match')
+            except UserDetails.DoesNotExist:
+                form.add_error(None, 'User does not exist')
+
+
+    else:
+        form = ForgotPasswordForm()
+    return render(request, 'FrontEnd/forgotpassword.html', {'form': form})
