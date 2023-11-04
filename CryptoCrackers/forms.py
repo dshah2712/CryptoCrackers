@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserDetails
+from .models import UserDetails, Transactions
 
 
 class RegisterForm(forms.ModelForm):
@@ -43,3 +43,8 @@ def _init_(self, *args, **kwargs):
     self.fields['email'].required = True
     self.fields['username'].required = True
     self.fields['date_of_time'].required = True
+
+class PurchaseForm(forms.ModelForm):
+    class Meta:
+        model = Transactions
+        fields = ['currency', 'amount']

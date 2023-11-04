@@ -44,3 +44,18 @@ class CryptoCurrency(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Transactions(models.Model):
+    CRYPTO_CHOICES = [
+        ('BTC', 'Bitcoin'),
+        ('ETH', 'Ethereum'),
+        ('LTC', 'Litecoin'),
+        # Add more cryptocurrencies as needed
+    ]
+    currency = models.CharField(max_length=3, choices=CRYPTO_CHOICES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.currency} - {self.amount}"

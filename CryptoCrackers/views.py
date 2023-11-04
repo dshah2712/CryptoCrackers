@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .forms import  LoginForm,RegisterForm,ForgotPasswordForm
+from .forms import  LoginForm,RegisterForm,ForgotPasswordForm, PurchaseForm
+from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from .models import UserDetails,CryptoCurrency
@@ -121,3 +122,22 @@ def forgot_password(request):
     else:
         form = ForgotPasswordForm()
     return render(request, 'FrontEnd/forgotpassword.html', {'form': form})
+
+def purchase_crypto(request):
+    if request.method == "POST":
+        form = PurchaseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Here you would implement the payment logic or redirect to the payment service
+            # For demonstration purposes, we'll just redirect to a 'payment' URL.
+            return redirect(reverse('payment'))
+    else:
+        form = PurchaseForm()
+    return render(request, 'Frontend/purchase_form.html', {'form': form})
+
+def payment(request):
+    # Dummy payment handling view
+    # Here you would integrate with PayPal or another payment service.
+    # After payment, you might redirect to a success or failure page.
+    return render(request, 'Frontend/payment.html')
+

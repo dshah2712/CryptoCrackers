@@ -9,5 +9,7 @@ urlpatterns = [
     path('signup/', views.user_signup, name='signup'),
     path('forgotpassword/', views.forgot_password, name='forgotpassword'),
     path('process_form/', views.process_form, name='process_form'),
-    path('account/',include('allauth.urls'))
+    path('account/',include('allauth.urls')),
+    path('purchase/', views.purchase_crypto, name='purchase'),
+    path('payment/', views.payment, name='payment'),
 ]
