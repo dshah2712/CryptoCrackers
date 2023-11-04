@@ -3,8 +3,7 @@ from .forms import  LoginForm,RegisterForm,ForgotPasswordForm, PurchaseForm
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
-from .models import UserDetails,CryptoCurrency
-from fetch_store_api import fetch_and_store_crypto_data
+from .models import UserDetails,CryptoCurrency, Transactions
 from django.http import HttpResponse
 def index(request):
     # fetch_and_store_crypto_data()
@@ -123,21 +122,44 @@ def forgot_password(request):
         form = ForgotPasswordForm()
     return render(request, 'FrontEnd/forgotpassword.html', {'form': form})
 
-def purchase_crypto(request):
-    if request.method == "POST":
+
+def create_transaction(request):
+    if request.method == 'POST':
         form = PurchaseForm(request.POST)
         if form.is_valid():
-            form.save()
-            # Here you would implement the payment logic or redirect to the payment service
-            # For demonstration purposes, we'll just redirect to a 'payment' URL.
-            return redirect(reverse('payment'))
+            # Don't save the form yet because we haven't completed the payment
+            transaction = form.save(commit=False)
+
+            # Get the current price of the selected cryptocurrency in CAD
+            current_price_cad = transaction.currency.current_price_cad
+
+            # Calculate the total price
+            total_price = transaction.amount * current_price_cad
+
+            # You may want to store the transaction in the session or a temporary place
+            request.session['transaction_data'] = {
+                'currency_id': transaction.currency.id,
+                'amount': str(transaction.amount),
+                'total_price': str(total_price)
+            }
+
+            # Redirect to the payment page
+            return redirect('/payment/')
     else:
         form = PurchaseForm()
-    return render(request, 'Frontend/purchase_form.html', {'form': form})
+    return render(request, 'FrontEnd/purchase_form.html', {'form': form})
 
-def payment(request):
-    # Dummy payment handling view
-    # Here you would integrate with PayPal or another payment service.
-    # After payment, you might redirect to a success or failure page.
-    return render(request, 'Frontend/payment.html')
 
+def purchase_crypto(request):
+    # Retrieve the transaction data from the session
+    transaction_data = request.session.get('transaction_data', {})
+
+    # In a real application, you should clear the session data after use
+    # request.session.pop('transaction_data', None)
+
+    context = {
+        'total_price': transaction_data.get('total_price'),
+        'currency_id': transaction_data.get('currency_id'),
+        'amount': transaction_data.get('amount'),
+    }
+    return render(request, 'FrontEnd/payment.html', context)

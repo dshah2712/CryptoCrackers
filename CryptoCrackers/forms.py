@@ -48,3 +48,7 @@ class PurchaseForm(forms.ModelForm):
     class Meta:
         model = Transactions
         fields = ['currency', 'amount']
+        widgets = {
+            'currency': forms.Select(attrs={'class': 'form-control'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+        }

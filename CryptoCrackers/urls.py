@@ -10,6 +10,6 @@ urlpatterns = [
     path('forgotpassword/', views.forgot_password, name='forgotpassword'),
     path('process_form/', views.process_form, name='process_form'),
     path('account/',include('allauth.urls')),
-    path('purchase/', views.purchase_crypto, name='purchase'),
-    path('payment/', views.payment, name='payment'),
+    path('purchase/', views.create_transaction, name='purchase'),
+    path('payment/', views.purchase_crypto, name='payment'),
 ]
