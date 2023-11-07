@@ -12,4 +12,5 @@ urlpatterns = [
     path('account/',include('allauth.urls')),
     path('purchase/', views.create_transaction, name='purchase'),
     path('payment/', views.purchase_crypto, name='payment'),
+    path('coins/<str:coin_name>/', views.dynamic_Crypto, name='dynamic_crypto'),
 ]

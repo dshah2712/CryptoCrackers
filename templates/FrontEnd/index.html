@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,8 +55,7 @@
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>
-                        <img src="{{ data.image }}" alt="{{ data.symbol }}" width="30" height="30">
-                        {{ data.symbol }}
+                        <a href="/coins/{{data.name }}"><img src="{{ data.image }}" alt="{{ data.symbol }}" width="30" height="30">{{ data.symbol }}</a>
                     </td>
                     <td class="price price-usd">{{ data.current_price }}</td>
                     <td class="price price-cad" style="display:none;">{{ data.current_price_cad }}</td>
@@ -114,5 +114,6 @@
     });
         });
     </script>
+    </div>
 </body>
 </html>

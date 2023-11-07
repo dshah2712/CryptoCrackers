@@ -12,6 +12,7 @@ class UserDetails(models.Model):
     def _str_(self):
         return self.username
 
+
 class CryptoCurrency(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     symbol = models.CharField(max_length=10)
@@ -43,7 +44,11 @@ class CryptoCurrency(models.Model):
     last_updated = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        # Create a list of field names and their values
+        fields = [f"{field.name}: {getattr(self, field.name)}" for field in self._meta.fields]
+
+        # Join the field-value pairs into a single string
+        return ', '.join(fields)
 
 
 class Transactions(models.Model):

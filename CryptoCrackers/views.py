@@ -4,9 +4,23 @@ from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from .models import UserDetails,CryptoCurrency, Transactions
+import matplotlib as mpl
+mpl.use('Agg')  # Use the 'Agg' backend, which is non-interactive and works well in various environments
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from io import BytesIO
+import base64
+import pandas as pd
+from datetime import datetime, timedelta
+import numpy as np
 from django.http import HttpResponse
+
+
+
 def index(request):
     # fetch_and_store_crypto_data()
+
+
     if request.user.is_authenticated:
         # Access user data from Google OAuth
         google_account = request.user.socialaccount_set.filter(provider='google').first()
@@ -29,7 +43,7 @@ def index(request):
                 print("New User created")
 
     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
-    print(coin_list)
+    # print(coin_list)
 
     return render(request, 'FrontEnd/index.html',{'coins': coin_list})
 
@@ -51,6 +65,7 @@ def user_login(request):
                         if check_password(password, user.password):
                             # Manually set the user's ID in the session to log them in
                             request.session['_user_id'] = user.id
+
                             return redirect('/')
                         else:
                             form.add_error(None, 'Invalid login credentials')
@@ -163,3 +178,83 @@ def purchase_crypto(request):
         'amount': transaction_data.get('amount'),
     }
     return render(request, 'FrontEnd/payment.html', context)
+
+def dynamic_Crypto(request,coin_name):
+
+
+    coin = get_object_or_404(CryptoCurrency, name=coin_name)
+
+
+
+    plt.switch_backend('Agg')
+    if coin.current_price < 1:
+        coin.current_price = 10 + coin.current_price
+    base_value = int(coin.current_price)
+
+    # Generate 12 monthly values that depend on the base value, for example, fluctuate by up to 15%
+    monthly_changes = np.random.uniform(-0.15, 0.15, 12)
+    monthly_values = base_value * (1 + monthly_changes)
+
+    # Generate a date range of the last 12 months
+    end_date = datetime.today()
+    start_date = end_date - timedelta(days=365)
+    dates = pd.date_range(start=start_date, periods=12, freq='MS')  # 'MS' stands for month start frequency
+
+    # Create the plot
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(dates, monthly_values, color='darkorange', marker='o', linewidth=2)
+
+    # Format the dates on the x-axis
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+    plt.xticks(rotation=45)
+
+    # Set y-axis range to ±15% from the base value
+    y_min = base_value * (1 - 0.2)
+    y_max = base_value * (1 + 0.2)
+    ax.set_ylim([y_min, y_max])
+
+    # Hide the y-axis labels and spines
+    # ax.get_yaxis().set_visible(False)
+    # for spine in ax.spines.values():
+    #     spine.set_visible(False)
+
+    # Hide the y-axis
+    ax.get_yaxis().set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.spines['bottom'].set_visible(True)
+    # ax.spines['bottom'].set_linewidth(0)
+    # current_price = prices[-1]
+    # price_change =
+    percentage_change = .15 * 100
+    # Use ax.text() to add annotations to the plot
+    ax.text(0.03, 0.97, f'USD${coin.current_price:,.2f}',
+            transform=ax.transAxes, fontsize=14,
+            verticalalignment='top', bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.3))
+
+    ax.text(0.03, 0.92, f'↗USD${15:,.2f} ({percentage_change:.2f}%)',
+            transform=ax.transAxes, fontsize=12,
+            verticalalignment='top', bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.3))
+
+    # Remaining plot code...
+
+    # Convert plot to PNG image
+    buf = BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    plt.close(fig)  # Close the figure to free memory
+    buf.seek(0)  # Rewind the buffer
+
+    # Encode the image in base64 and close the buffer
+    image_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    buf.close()
+
+    # Construct the image src data URI
+    image_url = f"data:image/png;base64,{image_base64}"
+    context ={
+        "coin": coin,
+        "data_uri": image_url
+    }
+
+    return render(request, 'FrontEnd/dynamicCrypto.html',context)
