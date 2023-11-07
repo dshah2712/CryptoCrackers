@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserDetails
+from .models import UserDetails, Transactions
 
 
 class RegisterForm(forms.ModelForm):
@@ -24,6 +24,18 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(),required=True)
 
 
+class ForgotPasswordForm(forms.Form):
+    username = forms.CharField(required=True)
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+    )
+    confirm_password = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+    )
+
+
 def _init_(self, *args, **kwargs):
     super(RegisterForm, self)._init_(*args, **kwargs)
     self.fields['first_name'].required = True
@@ -31,3 +43,12 @@ def _init_(self, *args, **kwargs):
     self.fields['email'].required = True
     self.fields['username'].required = True
     self.fields['date_of_time'].required = True
+
+class PurchaseForm(forms.ModelForm):
+    class Meta:
+        model = Transactions
+        fields = ['currency', 'amount']
+        widgets = {
+            'currency': forms.Select(attrs={'class': 'form-control'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+        }

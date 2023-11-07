@@ -11,6 +11,7 @@ class UserDetails(models.Model):
     def _str_(self):
         return self.username
 
+
 class CryptoCurrency(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     symbol = models.CharField(max_length=10)
@@ -42,6 +43,38 @@ class CryptoCurrency(models.Model):
     last_updated = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
+<<<<<<< HEAD
         return self.name
 
 #Profile modles
+=======
+        # Create a list of field names and their values
+        fields = [f"{field.name}: {getattr(self, field.name)}" for field in self._meta.fields]
+
+        # Join the field-value pairs into a single string
+        return ', '.join(fields)
+
+
+class Transactions(models.Model):
+    # CRYPTO_CHOICES = [
+    #     ('BTC', 'Bitcoin'),
+    #     ('ETH', 'Ethereum'),
+    #     ('LTC', 'Litecoin'),
+    #     # Add more cryptocurrencies as needed
+    # ]
+    # currency = models.CharField(max_length=3, choices=CRYPTO_CHOICES)
+    currency = models.ForeignKey(CryptoCurrency, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.currency.name} - {self.amount}"
+    
+#User-Profile Model
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(UserDetails, on_delete = models.CASCADE) # cascade - if user deleted delete profile
+#     profile_image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+
+#     def __str__(self):
+#         return f'{self.user.username} Profile'
+>>>>>>> sprintLatest
