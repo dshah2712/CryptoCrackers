@@ -65,3 +65,11 @@ class Transactions(models.Model):
 
     def __str__(self):
         return f"{self.currency.name} - {self.amount}"
+    
+#User-Profile Model
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(UserDetails, on_delete = models.CASCADE) # cascade - if user deleted delete profile
+#     profile_image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+
+#     def __str__(self):
+#         return f'{self.user.username} Profile'

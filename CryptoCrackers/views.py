@@ -1,5 +1,5 @@
-from django.shortcuts import render,redirect,get_object_or_404
-from .forms import  LoginForm,RegisterForm,ForgotPasswordForm, PurchaseForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
@@ -13,8 +13,7 @@ import base64
 import pandas as pd
 from datetime import datetime, timedelta
 import numpy as np
-from django.http import HttpResponse
-
+from django.http import HttpResponse, HttpResponseRedirect
 
 
 def index(request):
@@ -66,7 +65,9 @@ def user_login(request):
                             # Manually set the user's ID in the session to log them in
                             request.session['_user_id'] = user.id
 
-                            return redirect('/')
+                            return redirect('/home')
+                            # # Redirect to the user's profile page
+                            # return HttpResponseRedirect(reverse('CryptoCrackers:profile'))
                         else:
                             form.add_error(None, 'Invalid login credentials')
 
@@ -74,7 +75,7 @@ def user_login(request):
                 form.add_error(None, 'User does not exist')
     else:
         form = LoginForm()
-    return render(request, 'FrontEnd/login.html', {'form': form})
+        return render(request, 'FrontEnd/login.html', {'form': form})
 
 
 def process_form(request):
@@ -258,3 +259,24 @@ def dynamic_Crypto(request,coin_name):
     }
 
     return render(request, 'FrontEnd/dynamicCrypto.html',context)
+
+def user_profile(request):
+    if request.method == 'POST':
+        print(request.POST['avatar'])
+    else:
+        #Retrive the user id from the session
+        value = request.session.get('_user_id')
+        #Get user details from the retrieved user id
+        user = UserDetails.objects.get(id=value)
+        
+        return render(request, 'FrontEnd/profile.html', {'user': user})
+
+def homePage(request):
+    value = request.session.get('_user_id')
+    user = UserDetails.objects.get(id=value)
+    coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
+    print(coin_list)
+
+    return render(request, 'FrontEnd/index2.html',{'user': user, 'coins': coin_list})
+
+
