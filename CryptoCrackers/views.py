@@ -16,12 +16,45 @@ import numpy as np
 from django.http import HttpResponse, HttpResponseRedirect
 
 
+# def index(request):
+#     # fetch_and_store_crypto_data()
+#
+#
+#     if request.user.is_authenticated:
+#         # Access user data from Google OAuth
+#         google_account = request.user.socialaccount_set.filter(provider='google').first()
+#
+#         if google_account:
+#
+#             google_data = google_account.extra_data
+#             print("google account details", google_data)
+#             google_email = google_data.get('email')
+#             try:
+#                 user = UserDetails.objects.get(username=google_email)
+#                 if user:
+#                     print("User exist")
+#                 else:
+#                     print("User does not else exist")
+#
+#             except UserDetails.DoesNotExist:
+#                 newGoogleUser = UserDetails(username=google_email,first_name=google_data.get('given_name'),last_name=google_data.get('family_name'),email=google_email)
+#                 newGoogleUser.save()
+#                 print("New User created")
+#
+#     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
+#     # print(coin_list)
+#
+#     return render(request, 'FrontEnd/index.html',{'coins': coin_list})
 def index(request):
-    # fetch_and_store_crypto_data()
-
-
+    user_log = False
+    my_var = request.session.get('_user_id')
+    if my_var:
+        user_log=True
+    else:
+        user_log=False
     if request.user.is_authenticated:
         # Access user data from Google OAuth
+
         google_account = request.user.socialaccount_set.filter(provider='google').first()
 
         if google_account:
@@ -29,6 +62,7 @@ def index(request):
             google_data = google_account.extra_data
             print("google account details", google_data)
             google_email = google_data.get('email')
+            print("email",google_email)
             try:
                 user = UserDetails.objects.get(username=google_email)
                 if user:
@@ -41,10 +75,13 @@ def index(request):
                 newGoogleUser.save()
                 print("New User created")
 
-    coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
-    # print(coin_list)
 
-    return render(request, 'FrontEnd/index.html',{'coins': coin_list})
+    coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:20]
+    #print(coin_list)
+    if request.user.is_authenticated:
+        user_log= True
+
+    return render(request, 'FrontEnd/index.html',{'coins': coin_list,'user_log':user_log})
 
 
 def user_login(request):
