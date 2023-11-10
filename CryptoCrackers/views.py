@@ -46,6 +46,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 #
 #     return render(request, 'FrontEnd/index.html',{'coins': coin_list})
 def index(request):
+    value = request.session.get('_user_id')
+    user = UserDetails.objects.get(id=value)
     user_log = False
     my_var = request.session.get('_user_id')
     if my_var:
@@ -81,7 +83,7 @@ def index(request):
     if request.user.is_authenticated:
         user_log= True
 
-    return render(request, 'FrontEnd/index.html',{'coins': coin_list,'user_log':user_log})
+    return render(request, 'FrontEnd/index.html',{'user':user,'coins': coin_list,'user_log':user_log})
 
 
 def user_login(request):
@@ -102,7 +104,7 @@ def user_login(request):
                             # Manually set the user's ID in the session to log them in
                             request.session['_user_id'] = user.id
 
-                            return redirect('/home')
+                            return redirect('/')
                             # # Redirect to the user's profile page
                             # return HttpResponseRedirect(reverse('CryptoCrackers:profile'))
                         else:
