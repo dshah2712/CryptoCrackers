@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coin Search</title>
     <link rel="stylesheet" href="../../static/css/styles.css">
+    <link rel="stylesheet" href="../../static/css/news.css">
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {#    <script src="../../static/script.js" defer></script>#}
 </head>
@@ -87,6 +89,8 @@
     <div class="news-section">
         <h2><img src="../../static/news.svg" alt="news image">NEWS & UPDATES</h2>
         <div class="news-cards">
+            <button id="prevBtn" ><img src="../../static/prev.png" alt="previous" style="width: 20px ; height: 20px"></button>
+
             {% for news_item in news %}
             <div class="news-card">
                 <img src="../../{{ news_item.image.url}}" alt="{{ news_item.title }}">
@@ -95,6 +99,8 @@
 {#                <a href="#">Read more</a>#}
             </div>
             {% endfor %}
+            <button id="nextBtn" ><img  src="../../static/next.png" alt="next" style="width: 20px ; height: 20px"></button>
+
         </div>
     </div>
 
@@ -135,6 +141,42 @@
         dropdownContent.style.display = "none";
     });
         });
+        document.addEventListener('DOMContentLoaded', function() {
+    const newsContainer = document.getElementById('newsContainer');
+    const prevButton = document.getElementById('prevBtn');
+    const nextButton = document.getElementById('nextBtn');
+    const newsCards = document.querySelectorAll('.news-card');
+    const numberOfCards = 3; // Number of news cards to display at once
+    let currentCard = 0;
+
+    function showNewsCards(start) {
+        for (let i = 0; i < newsCards.length; i++) {
+            if (i >= start && i < start + numberOfCards) {
+                newsCards[i].style.display = 'block';
+            } else {
+                newsCards[i].style.display = 'none';
+            }
+        }
+    }
+
+    // Initially show the first set of news cards
+    showNewsCards(currentCard);
+
+    prevButton.addEventListener('click', function() {
+        if (currentCard > 0) {
+            currentCard -= 1;
+            showNewsCards(currentCard);
+        }
+    });
+
+    nextButton.addEventListener('click', function() {
+        if (currentCard + numberOfCards < newsCards.length) {
+            currentCard += 1;
+            showNewsCards(currentCard);
+        }
+    });
+});
+
     </script>
 </body>
 </html>
