@@ -3,7 +3,7 @@ from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
-from .models import UserDetails,CryptoCurrency, Transactions
+from .models import UserDetails,CryptoCurrency, Transactions , News
 import matplotlib as mpl
 mpl.use('Agg')  # Use the 'Agg' backend, which is non-interactive and works well in various environments
 import matplotlib.pyplot as plt
@@ -15,43 +15,16 @@ from datetime import datetime, timedelta
 import numpy as np
 from django.http import HttpResponse, HttpResponseRedirect
 
-
-# def index(request):
-#     # fetch_and_store_crypto_data()
-#
-#
-#     if request.user.is_authenticated:
-#         # Access user data from Google OAuth
-#         google_account = request.user.socialaccount_set.filter(provider='google').first()
-#
-#         if google_account:
-#
-#             google_data = google_account.extra_data
-#             print("google account details", google_data)
-#             google_email = google_data.get('email')
-#             try:
-#                 user = UserDetails.objects.get(username=google_email)
-#                 if user:
-#                     print("User exist")
-#                 else:
-#                     print("User does not else exist")
-#
-#             except UserDetails.DoesNotExist:
-#                 newGoogleUser = UserDetails(username=google_email,first_name=google_data.get('given_name'),last_name=google_data.get('family_name'),email=google_email)
-#                 newGoogleUser.save()
-#                 print("New User created")
-#
-#     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
-#     # print(coin_list)
-#
-#     return render(request, 'FrontEnd/index.html',{'coins': coin_list})
 def index(request):
+    news = News.objects.all()
     value = request.session.get('_user_id')
-    user = UserDetails.objects.get(id=value)
+    user = None
     user_log = False
     my_var = request.session.get('_user_id')
     if my_var:
         user_log=True
+        user = UserDetails.objects.get(id=value)
+
     else:
         user_log=False
     if request.user.is_authenticated:
@@ -83,7 +56,7 @@ def index(request):
     if request.user.is_authenticated:
         user_log= True
 
-    return render(request, 'FrontEnd/index.html',{'user':user,'coins': coin_list,'user_log':user_log})
+    return render(request, 'FrontEnd/index.html',{'user':user,'coins': coin_list,'user_log':user_log,'news':news})
 
 
 def user_login(request):

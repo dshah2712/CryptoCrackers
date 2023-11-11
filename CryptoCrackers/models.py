@@ -12,7 +12,10 @@ class UserDetails(models.Model):
     def _str_(self):
         return self.username
 
-
+class News(models.Model):
+    title = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='static/news_images/')
+    description = models.TextField()
 class CryptoCurrency(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     symbol = models.CharField(max_length=10)

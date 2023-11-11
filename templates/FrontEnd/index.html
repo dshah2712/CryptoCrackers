@@ -34,19 +34,20 @@
     <div class="profile-section">
     <div class="profile-section" style="position: relative;">
     <img src="../../static/person.svg" alt="Profile Image" id="profile-image">
-{#    <div class="dropdown-content" id="dropdown" style="display: none; position: absolute; background-color: #a71212; z-index: 1; right: 0; top: 100%; width: 200px">#}
-{#        {% if user_log %}#}
-{#            <a id="profile-link">My Profile</a>#}
-{#            <a id="dashboard-link">Dashboard</a>#}
-{#        {% else %}#}
-{#            <a id="login-link" style="width: 200px">Login / SignUp</a>#}
-{#        {% endif %}#}
-{##}
-{#    </div>#}
-<div class="dropdown-content" id="dropdown" style="display: none; position: absolute; background-color: #a71212; z-index: 1; right: 0; top: 100%; width: 200px">
-        <a  href="{% url 'CryptoCrackers:profile' %}" style="width: 200px">{{user.username}}</a>
+    <div class="dropdown-content" id="dropdown" style="display: none; position: absolute; background-color: #a71212; z-index: 1; right: 0; top: 100%; width: 200px">
+        {% if user_log %}
+            <a  href="{% url 'CryptoCrackers:profile' %}" style="width: 200px">{{user.username}}</a>
+            <a id="dashboard-link">Dashboard</a>
+        {% else %}
+            <a id="login-link" style="width: 200px">Login / SignUp</a>
+        {% endif %}
     </div>
-</div>
+    </div>
+
+{#<div class="dropdown-content" id="dropdown" style="display: none; position: absolute; background-color: #a71212; z-index: 1; right: 0; top: 100%; width: 200px">#}
+{#        <a  href="{% url 'CryptoCrackers:profile' %}" style="width: 200px">{{user.username}}</a>#}
+{#    </div>#}
+{#</div>#}
 
     </div>
         <header>
@@ -82,6 +83,21 @@
                 {% endfor %}
             </tbody>
         </table>
+
+    <div class="news-section">
+        <h2><img src="../../static/news.svg" alt="news image">NEWS & UPDATES</h2>
+        <div class="news-cards">
+            {% for news_item in news %}
+            <div class="news-card">
+                <img src="../../{{ news_item.image.url}}" alt="{{ news_item.title }}">
+                <h3>{{ news_item.title }}</h3>
+                <p>{{ news_item.description }}</p>
+{#                <a href="#">Read more</a>#}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
     </div>
     <script>
         $(document).ready(function () {
