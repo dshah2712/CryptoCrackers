@@ -9,6 +9,7 @@ class UserDetails(models.Model):
     last_name = models.CharField(max_length=255, null = True, blank=True)
     date_of_birth = models.DateField(blank=True, null = True)
     id_image = models.ImageField(upload_to='id_images/', null=True, blank=True)
+    wishlist=models.JSONField(default=list,blank=True)
     def _str_(self):
         return self.username
 

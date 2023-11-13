@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,6 +56,7 @@
         <table>
             <thead>
                 <tr>
+                    <th></th>
                     <th>#</th>
                     <th>Coin</th>
                     <th class="price price-usd">Price (USD)</th>
@@ -71,9 +70,14 @@
             <tbody>
                 {% for data in coins %}
                 <tr>
+                    {% if data.name in wish_list %}
+                        <td><a href="/remove_to_wishlist/{{ data.name }}"><img src="../../static/icon2.png" style="width: 20px ; height: 20px"/> </a></td>
+                    {% else %}
+                        <td><a href="/add_to_wishlist/{{ data.name }}"><img src="../../static/icon1.png" style="width: 20px ; height: 20px"/> </a></td>
+                 {% endif %}
                     <td>{{ forloop.counter }}</td>
                     <td>
-                                                <a href="/coins/{{data.name }}"><img src="{{ data.image }}" alt="{{ data.symbol }}" width="30" height="30">{{ data.symbol }}</a>
+                        <a href="/coins/{{data.name }}"><img src="{{ data.image }}" alt="{{ data.symbol }}" width="30" height="30">{{ data.symbol }}</a>
                     </td>
                     <td class="price price-usd">{{ data.current_price }}</td>
                     <td class="price price-cad" style="display:none;">{{ data.current_price_cad }}</td>

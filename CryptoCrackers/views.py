@@ -52,11 +52,14 @@ def index(request):
 
 
     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:20]
+    wish_list = user.wishlist
+
+
     #print(coin_list)
     if request.user.is_authenticated:
         user_log= True
 
-    return render(request, 'FrontEnd/index.html',{'user':user,'coins': coin_list,'user_log':user_log,'news':news})
+    return render(request, 'FrontEnd/index.html',{'user':user,'coins': coin_list,'user_log':user_log,'news':news,'wish_list':wish_list})
 
 
 def user_login(request):
@@ -292,3 +295,28 @@ def homePage(request):
     return render(request, 'FrontEnd/index2.html',{'user': user, 'coins': coin_list})
 
 
+def wishlist(request):
+    value = request.session.get('_user_id')
+    user = UserDetails.objects.get(id=value)
+    wish_list= user.wishlist
+    print(wish_list)
+    return render(request, 'FrontEnd/wishlist.html',{"user":user, 'wish_list':wish_list })
+
+def add_to_wishlist(request,coin_name):
+    value = request.session.get('_user_id')
+    user = UserDetails.objects.get(id=value)
+    coin = get_object_or_404(CryptoCurrency, name=coin_name)
+    user.wishlist.append(coin.name)
+    user.save()
+
+    print("wishlist added",user)
+    return redirect('/')
+
+def remove_to_wishlist(request,coin_name):
+    value = request.session.get('_user_id')
+    user = UserDetails.objects.get(id=value)
+    user.wishlist.remove(coin_name)
+    user.save()
+
+    print("wishlist removed",user)
+    return redirect('/')
