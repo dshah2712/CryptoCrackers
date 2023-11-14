@@ -283,16 +283,70 @@ def dynamic_Crypto(request,coin_name):
 
     return render(request, 'FrontEnd/dynamicCrypto.html',context)
 
+# def homePage(request):
+#     value = request.session.get('_user_id')
+#     user = UserDetails.objects.get(id=value)
+#     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
+#     print(coin_list)
+#
+#     return render(request, 'FrontEnd/index2.html', {'user': user, 'coins': coin_list})
+
 def user_profile(request):
     if request.method == 'POST':
         print(request.POST['avatar'])
-    else:
-        #Retrive the user id from the session
         value = request.session.get('_user_id')
-        #Get user details from the retrieved user id
+        # Get user details from the retrieved user id
         user = UserDetails.objects.get(id=value)
-        
+        user.first_name = request.POST['firstname']
+        user.username = request.POST['username']
+        user.last_name = request.POST['lastname']
+        user.save()
         return render(request, 'FrontEnd/profile.html', {'user': user})
+    else:
+        # Retrieve the user id from the session
+        value = request.session.get('_user_id')
+        # Get user details from the retrieved user id
+        user = UserDetails.objects.get(id=value)
+
+        return render(request, 'FrontEnd/profile.html', {'user': user})
+
+    # if request.method == 'POST':
+    #     print(request.POST['avatar'])
+    # else:
+    #     #Retrive the user id from the session
+    #     value = request.session.get('_user_id')
+    #     #Get user details from the retrieved user id
+    #     user = UserDetails.objects.get(id=value)
+    #
+    #     return render(request, 'FrontEnd/profile.html', {'user': user})
+
+
+def passwd_change(request):
+    value = request.session.get('_user_id')
+    user = UserDetails.objects.get(id=value)
+    currentPassword = request.POST['current-password']
+    if check_password(currentPassword, user.password):
+        if (request.POST['new-password'] == request.POST['confirm-password']):
+            user.password = make_password(request.POST['new-password'])
+            user.save()
+        else:
+            pass
+    else:
+        pass
+
+    return render(request, 'FrontEnd/profile.html')
+
+
+def delete_account(request):
+    value = request.session.get('_user_id')
+    user = UserDetails.objects.get(id=value)
+    print(user)
+    user.delete()
+    print(user)
+
+    form = LoginForm()
+    return render(request, 'FrontEnd/login.html', {'form': form})
+
 
 # def homePage(request):
 #     value = request.session.get('_user_id')

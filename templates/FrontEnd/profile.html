@@ -71,82 +71,126 @@
             cursor: pointer;
         }
 
+        .delete-button {
+            background-color: red;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
         .save-button:hover {
             background-color: #0056b3;
         }
+
+        .delete-button:hover {
+            background-color: darkred;
+        }
     </style>
+
+    <script>
+        // Function to toggle the visibility of sections
+        function toggleSection(sectionId) {
+            var sections = ["profile-details", "account-security"];
+            sections.forEach(function (section) {
+                var element = document.getElementById(section);
+                if (section === sectionId) {
+                    element.style.display = "block";
+                } else {
+                    element.style.display = "none";
+                }
+            });
+        }
+    </script>
 </head>
 <body>
-    <header>
-        <!-- Your website header content here -->
-    </header>
-    <nav>
-        <!-- Your website navigation menu here -->
-    </nav>
-    <main>
-        <div class="profile-container">
-            <div class="sidebar">
-                <ul>
-                    <li><a href="#profile-details">Profile Details</a></li>
-                    <li><a href="#account-security">Account Security</a></li>
-                </ul>
-            </div>
-            <div class="content">
-                <div id="profile-details">
-                    <h1>Profile Details</h1>
+<header>
+    <!-- Your website header content here -->
+</header>
+<nav>
+    <!-- Your website navigation menu here -->
+</nav>
+<main>
+    <div class="profile-container">
+        <div class="sidebar">
+            <ul>
+                <li><a href="javascript:void(0);" onclick="toggleSection('profile-details')">Profile Details</a></li>
+                <li><a href="javascript:void(0);" onclick="toggleSection('account-security')">Account Security</a></li>
+            </ul>
+        </div>
+        <div class="content">
 
-                    <form action="#" method="post">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="avatar">Avatar:</label>
-                            <input type="text" value="" id="avatar" name="avatar">
-                        </div>
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" value={{ user.username }} id="username" name="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="username">First Name:</label>
-                            <input type="text" value={{ user.first_name }} id="username" name="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="username">Last Name:</label>
-                            <input type="text" value={{ user.last_name }} id="username" name="username">
-                        </div>
-                         <div class="form-group">
-                            <label for="username">Email:</label>
-                            <input type="text" value={{ user.email }} id="username" name="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="birthdate">Birthdate:</label>
-                            <input type="text" value={{ user.date_of_birth }} id="birthdate" name="birthdate">
-                        </div>
-                        <button class="save-button" type="submit">Save</button>
-                    </form>
-                </div>
-                <div id="account-security">
-                    <h1>Account Security</h1>
-                    <form action="#" method="post">
-                        <div class="form-group">
-                            <label for="current-password">Current Password:</label>
-                            <input type="password" id="current-password" name="current-password">
-                        </div>
-                        <div class="form-group">
-                            <label for="new-password">New Password:</label>
-                            <input type="password" id="new-password" name="new-password">
-                        </div>
-                        <div class="form-group">
-                            <label for="confirm-password">Confirm New Password:</label>
-                            <input type="password" id="confirm-password" name="confirm-password">
-                        </div>
-                        <button class="save-button" type="submit">Change Password</button>
-                    </form>
-                </div>
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li
+                {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <div id="profile-details" style="display: block;">
+                <h1>Profile Details</h1>
+                <h1>{{ UserDetails.username }}</h1>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="avatar">Avatar:</label>
+                        <input type="text" id="avatar" name="avatar">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" value={{ user.username }} id="username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdate">Birthdate:</label>
+                        <input type="text" value={{ user.date_of_birth }} id="birthdate" name="birthdate">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdate">First Name:</label>
+                        <input type="text" value={{ user.first_name }} id="firstname" name="firstname">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last Name:</label>
+                        <input type="text" value={{ user.last_name }} id="lastname" name="lastname">
+                    </div>
+                    <button class="save-button" type="submit">Save</button>
+                </form>
+            </div>
+
+            <div id="account-security" style="display: none;">
+                <h1>Account Security</h1>
+                <form action="accountsecurity/" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="current-password">Current Password:</label>
+                        <input type="password" id="current-password" name="current-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password:</label>
+                        <input type="password" id="new-password" name="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm New Password:</label>
+                        <input type="password" id="confirm-password" name="confirm-password">
+                    </div>
+                    <button class="save-button" type="submit">Change Password</button>
+                </form>
+
+
+                <h2>Delete Account</h2>
+                <p>Deleting your account is irreversible and will remove all your data.</p>
+                <form action="delete_account/" method="post">
+                    {% csrf_token %}
+                    <button class="delete-button" type="submit">Delete Account</button>
+                </form>
             </div>
         </div>
-    </main>
-    <footer>
-        <!-- Your website footer content here -->
-    </footer>
+    </div>
+</main>
+<footer>
+    <!-- Your website footer content here -->
+</footer>
 </body>
 </html>
