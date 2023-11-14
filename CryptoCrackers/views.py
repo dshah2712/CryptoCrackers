@@ -18,12 +18,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 def index(request):
     news = News.objects.all()
     value = request.session.get('_user_id')
+    wish_list =[]
     user = None
     user_log = False
     my_var = request.session.get('_user_id')
     if my_var:
         user_log=True
         user = UserDetails.objects.get(id=value)
+        wish_list = user.wishlist
+
 
     else:
         user_log=False
@@ -37,9 +40,13 @@ def index(request):
             google_data = google_account.extra_data
             print("google account details", google_data)
             google_email = google_data.get('email')
-            print("email",google_email)
+
+            # print("email",google_email)
             try:
                 user = UserDetails.objects.get(username=google_email)
+                request.session['_user_id'] = user.id
+                print("google id user details",user)
+                wish_list = user.wishlist
                 if user:
                     print("User exist")
                 else:
@@ -52,7 +59,8 @@ def index(request):
 
 
     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:20]
-    wish_list = user.wishlist
+    print("user details are: ",user)
+
 
 
     #print(coin_list)
@@ -286,13 +294,13 @@ def user_profile(request):
         
         return render(request, 'FrontEnd/profile.html', {'user': user})
 
-def homePage(request):
-    value = request.session.get('_user_id')
-    user = UserDetails.objects.get(id=value)
-    coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
-    print(coin_list)
-
-    return render(request, 'FrontEnd/index2.html',{'user': user, 'coins': coin_list})
+# def homePage(request):
+#     value = request.session.get('_user_id')
+#     user = UserDetails.objects.get(id=value)
+#     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
+#     print(coin_list)
+#
+#     return render(request, 'FrontEnd/index2.html',{'user': user, 'coins': coin_list})
 
 
 def wishlist(request):

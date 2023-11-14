@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coin Search</title>
-    <link rel="stylesheet" href="../../static/css/styles.css">
+{#    <link rel="stylesheet" href="../../static/css/styles.css">#}
     <link rel="stylesheet" href="../../static/css/news.css">
-
+    <link rel="stylesheet" href="../../static/css/dashboard.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {#    <script src="../../static/script.js" defer></script>#}
 </head>
@@ -34,7 +34,7 @@
     <div class="profile-section">
     <div class="profile-section" style="position: relative;">
     <img src="../../static/person.svg" alt="Profile Image" id="profile-image">
-    <div class="dropdown-content" id="dropdown" style="display: none; position: absolute; background-color: #a71212; z-index: 1; right: 0; top: 100%; width: 200px">
+    <div class="dropdown-content" id="dropdown" style="display: none; position: relative; background-color: #a71212; z-index: 1; width: 200px">
         {% if user_log %}
             <a  href="{% url 'CryptoCrackers:profile' %}" style="width: 200px">{{user.username}}</a>
             <a id="dashboard-link">Dashboard</a>
@@ -43,49 +43,59 @@
         {% endif %}
     </div>
     </div>
-
-{#<div class="dropdown-content" id="dropdown" style="display: none; position: absolute; background-color: #a71212; z-index: 1; right: 0; top: 100%; width: 200px">#}
-{#        <a  href="{% url 'CryptoCrackers:profile' %}" style="width: 200px">{{user.username}}</a>#}
-{#    </div>#}
-{#</div>#}
+</div>
 
     </div>
-        <header>
-            <h1>Coin Search</h1>
+        <header class="header">
+            <h1>Cryptocurrencies</h1>
         </header>
-        <table>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>#</th>
-                    <th>Coin</th>
-                    <th class="price price-usd">Price (USD)</th>
-                    <th class="price price-cad" style="display:none;">Price (CAD)</th>
-                    <th class="price price-eur" style="display:none;">Price (EUR)</th>
-                    <th>24h</th>
-                    <th>Volume</th>
-                    <th>Mkt Cap</th>
-                </tr>
-            </thead>
+
+
+        <table id="crypto-table">
+  <thead>
+    <tr>
+       <!-- Empty header for the wishlist column -->
+      <th>#</th>
+        <th></th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Change (24H)</th>
+      <th>Market Cap</th>
+      <th>Volume (24h)</th>
+      <th>Circ. Supply</th>
+    </tr>
+  </thead>
+
             <tbody>
                 {% for data in coins %}
-                <tr>
+                    <tr>
+                    <td>{{ forloop.counter }}</td>
                     {% if data.name in wish_list %}
+{#                        <td><a href="/remove_to_wishlist/{{ data.name }}"><button class="wishlist-btn" onclick="addToWishlist(this)">★</button></a></td>#}
                         <td><a href="/remove_to_wishlist/{{ data.name }}"><img src="../../static/icon2.png" style="width: 20px ; height: 20px"/> </a></td>
                     {% else %}
+{#                        <td><a href="/add_to_wishlist/{{ data.name }}"><button class="wishlist-btn" onclick="addToWishlist(this)">☆</button></a></td>#}
                         <td><a href="/add_to_wishlist/{{ data.name }}"><img src="../../static/icon1.png" style="width: 20px ; height: 20px"/> </a></td>
                  {% endif %}
-                    <td>{{ forloop.counter }}</td>
-                    <td>
-                        <a href="/coins/{{data.name }}"><img src="{{ data.image }}" alt="{{ data.symbol }}" width="30" height="30">{{ data.symbol }}</a>
-                    </td>
-                    <td class="price price-usd">{{ data.current_price }}</td>
-                    <td class="price price-cad" style="display:none;">{{ data.current_price_cad }}</td>
-                    <td class="price price-eur" style="display:none;">{{ data.current_price_eur }}</td>
-                    <td>{{ data.price_change_percentage_24h }}</td>
-                    <td>{{ data.total_volume }}</td>
-                    <td>{{ data.market_cap }}</td>
-                </tr>
+
+
+      <td style="font-weight:600;font-size: 16px" >
+          <a href="/coins/{{ data.name }}" style="text-decoration: none;color: black"><img src="{{ data.image }}" alt="{{ data.symbol }}" width="30" height="30"> <span class="dynamic-name" style="position: relative;top: -9px">{{ data.name }}  <span style="color: #789;font-weight: normal;text-transform: uppercase ">{{ data.symbol }}</span></span></a></td>
+      <td class="price price-usd">$ {{ data.current_price }}</td>
+      <td class="price price-cad" style="display:none;">CAD {{ data.current_price_cad }}</td>
+      <td class="price price-eur" style="display:none;">€ {{ data.current_price_eur }}</td>
+       {% if data.price_change_percentage_24h > 0 %}
+           <td style="color: green">+ {{data.price_change_percentage_24h}}%</td>
+        {% else %}
+           <td style="color: red">{{data.price_change_percentage_24h}}%</td>
+         {% endif %}
+
+      <td>{{ data.market_cap }}</td>
+      <td>{{ data.total_volume }}</td>
+      <td><span style="color: #789;font-weight: normal;text-transform: uppercase ">{{ data.symbol }}</span> {{ data.circulating_supply }}</td>
+    </tr>
+
+
                 {% endfor %}
             </tbody>
         </table>
@@ -180,7 +190,21 @@
         }
     });
 });
+const wishlistButtons = document.querySelectorAll('.wishlist-btn');
 
+// Add click event listener to each button
+wishlistButtons.forEach(button => {
+  button.addEventListener('click', function() {
+    // Toggle the 'active' class on click
+    button.classList.toggle('active');
+    // Change the star character if needed
+    if (button.classList.contains('active')) {
+      button.textContent = '★'; // Filled star character
+    } else {
+      button.textContent = '☆'; // Empty star character
+    }
+  });
+});
     </script>
 </body>
 </html>

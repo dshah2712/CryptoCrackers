@@ -47,13 +47,14 @@ class CryptoCurrency(models.Model):
     roi = models.FloatField(null=True)
     last_updated = models.DateTimeField(blank=True, null=True)
 
+    # def __str__(self):
+    #     # Create a list of field names and their values
+    #     fields = [f"{field.name}: {getattr(self, field.name)}" for field in self._meta.fields]
+    #
+    #     # Join the field-value pairs into a single string
+    #     return ', '.join(fields)
     def __str__(self):
-        # Create a list of field names and their values
-        fields = [f"{field.name}: {getattr(self, field.name)}" for field in self._meta.fields]
-
-        # Join the field-value pairs into a single string
-        return ', '.join(fields)
-
+        return self.name
 
 class Transactions(models.Model):
     # CRYPTO_CHOICES = [

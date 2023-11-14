@@ -14,9 +14,14 @@ urlpatterns = [
     path('payment/', views.purchase_crypto, name='payment'),
     path('coins/<str:coin_name>/', views.dynamic_Crypto, name='dynamic_crypto'),
     path('userprofile/', views.user_profile, name='profile'),
-    path('home/', views.homePage, name='home'),
+
+    # path('home/', views.homePage, name='home'),
     path('add_to_wishlist/<str:coin_name>/', views.add_to_wishlist, name='add-to-wishlist'),
     path('wishlist/remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
     path('remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
     path('wishlist/', views.wishlist, name='wishlist'),
+
+    # path('home/', views.homePage, name='home'),
+
+
 ]
