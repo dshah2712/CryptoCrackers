@@ -3,7 +3,7 @@ from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
-from .models import UserDetails,CryptoCurrency, Transactions , News
+from .models import UserDetails, CryptoCurrency, Transactions, News
 import matplotlib as mpl
 mpl.use('Agg')  # Use the 'Agg' backend, which is non-interactive and works well in various environments
 import matplotlib.pyplot as plt
@@ -14,6 +14,9 @@ import pandas as pd
 from datetime import datetime, timedelta
 import numpy as np
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.contrib import messages
 
 def index(request):
     news = News.objects.all()
@@ -324,17 +327,40 @@ def user_profile(request):
 def passwd_change(request):
     value = request.session.get('_user_id')
     user = UserDetails.objects.get(id=value)
+
     currentPassword = request.POST['current-password']
     if check_password(currentPassword, user.password):
         if (request.POST['new-password'] == request.POST['confirm-password']):
             user.password = make_password(request.POST['new-password'])
             user.save()
+            # messages.success(request, "Password changed successfully.")
         else:
             pass
+            # messages.error(request, "New password and confirm password do not match.")
     else:
         pass
+            # messages.error(request, "Current password is incorrect.")
 
-    return render(request, 'FrontEnd/profile.html')
+    # if user.social_auth.filter(provider='google-oauth2').exists():
+    #     # Redirect or display a message indicating that password change is not allowed
+    #     messages.warning(request, "You logged in through Google Authentication. Password change is not allowed.")
+    #     return redirect('FrontEnd/profile.html')
+    #
+    # if request.method == "POST":
+    #     currentPassword = request.POST['current-password']
+    #     if check_password(currentPassword, user.password):
+    #         if (request.POST['new-password'] == request.POST['confirm-password']):
+    #             user.password = make_password(request.POST['new-password'])
+    #             user.save()
+    #             # messages.success(request, "Password changed successfully.")
+    #         else:
+    #             pass
+    #             # messages.error(request, "New password and confirm password do not match.")
+    #     else:
+    #         pass
+    #         # messages.error(request, "Current password is incorrect.")
+    #
+    # return render(request, 'FrontEnd/profile.html')
 
 
 def delete_account(request):
@@ -345,7 +371,7 @@ def delete_account(request):
     print(user)
 
     form = LoginForm()
-    return render(request, 'FrontEnd/login.html', {'form': form})
+    return render(request, 'CryptoCrackers:login.html', {'form': form})
 
 
 # def homePage(request):
@@ -356,13 +382,18 @@ def delete_account(request):
 #
 #     return render(request, 'FrontEnd/index2.html',{'user': user, 'coins': coin_list})
 
+def user_logout(request):
+    request.session.flush()
+    logout(request)
+    # messages.success(request,("You Were Logged Out Successfully!"))
+    return redirect('/')
 
 def wishlist(request):
     value = request.session.get('_user_id')
     user = UserDetails.objects.get(id=value)
     wish_list= user.wishlist
     print(wish_list)
-    return render(request, 'FrontEnd/wishlist.html',{"user":user, 'wish_list':wish_list })
+    return render(request, 'FrontEnd/wishlist.html',{"user": user, 'wish_list': wish_list })
 
 def add_to_wishlist(request,coin_name):
     value = request.session.get('_user_id')

@@ -1,5 +1,6 @@
-from django.urls import path,include
+from django.urls import path, include, path
 from CryptoCrackers import views
+from .views import user_logout
 
 app_name = 'CryptoCrackers'
 
@@ -16,7 +17,7 @@ urlpatterns = [
     path('userprofile/', views.user_profile, name='profile'),
     path('userprofile/accountsecurity/', views.passwd_change, name='change password'),
     path('userprofile/delete_account/', views.delete_account, name='delete_account'),
-
+    path('logout/', views.user_logout, name='logout'),
     # path('home/', views.homePage, name='home'),
     path('add_to_wishlist/<str:coin_name>/', views.add_to_wishlist, name='add-to-wishlist'),
     path('wishlist/remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
