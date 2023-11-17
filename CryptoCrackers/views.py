@@ -72,7 +72,8 @@ def index(request):
 
     return render(request, 'FrontEnd/index.html',{'user':user,'coins': coin_list,'user_log':user_log,'news':news,'wish_list':wish_list})
 
-
+def landing(request):
+    return render(request,'FrontEnd/landingPage.html')
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -91,7 +92,7 @@ def user_login(request):
                             # Manually set the user's ID in the session to log them in
                             request.session['_user_id'] = user.id
 
-                            return redirect('/')
+                            return redirect('CryptoCrackers:index')
                             # # Redirect to the user's profile page
                             # return HttpResponseRedirect(reverse('CryptoCrackers:profile'))
                         else:
@@ -403,7 +404,7 @@ def add_to_wishlist(request,coin_name):
     user.save()
 
     print("wishlist added",user)
-    return redirect('/')
+    return redirect('CryptoCrackers:index')
 
 def remove_to_wishlist(request,coin_name):
     value = request.session.get('_user_id')
@@ -412,4 +413,4 @@ def remove_to_wishlist(request,coin_name):
     user.save()
 
     print("wishlist removed",user)
-    return redirect('/')
+    return redirect('CryptoCrackers:index')

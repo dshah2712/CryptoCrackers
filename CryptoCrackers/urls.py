@@ -23,6 +23,7 @@ urlpatterns = [
     path('wishlist/remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
     path('remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
     path('wishlist/', views.wishlist, name='wishlist'),
+    path('/', views.landing, name='landing'),
 
     # path('home/', views.homePage, name='home'),
 
