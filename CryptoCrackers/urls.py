@@ -11,21 +11,17 @@ urlpatterns = [
     path('forgotpassword/', views.forgot_password, name='forgotpassword'),
     path('process_form/', views.process_form, name='process_form'),
     path('account/',include('allauth.urls')),
-    path('purchase/', views.create_transaction, name='purchase'),
-    path('payment/', views.purchase_crypto, name='payment'),
     path('coins/<str:coin_name>/', views.dynamic_Crypto, name='dynamic_crypto'),
     path('userprofile/', views.user_profile, name='profile'),
     path('userprofile/accountsecurity/', views.passwd_change, name='change password'),
     path('userprofile/delete_account/', views.delete_account, name='delete_account'),
     path('logout/', views.user_logout, name='logout'),
-    # path('home/', views.homePage, name='home'),
     path('add_to_wishlist/<str:coin_name>/', views.add_to_wishlist, name='add-to-wishlist'),
     path('wishlist/remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
     path('remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
     path('wishlist/', views.wishlist, name='wishlist'),
-    path('/', views.landing, name='landing'),
-
+    path('landing/', views.landing, name='landing'),
+    path('add_money/', views.add_money, name='add_money'),
+    path('purchase_currency/', views.purchase_currency, name='purchase_currency'),
     # path('home/', views.homePage, name='home'),
-
-
-]
+    ]

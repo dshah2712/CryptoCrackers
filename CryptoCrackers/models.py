@@ -49,34 +49,53 @@ class CryptoCurrency(models.Model):
     roi = models.FloatField(null=True)
     last_updated = models.DateTimeField(blank=True, null=True)
 
-    # def __str__(self):
-    #     # Create a list of field names and their values
-    #     fields = [f"{field.name}: {getattr(self, field.name)}" for field in self._meta.fields]
-    #
-    #     # Join the field-value pairs into a single string
-    #     return ', '.join(fields)
     def __str__(self):
         return self.name
 
-class Transactions(models.Model):
-    # CRYPTO_CHOICES = [
-    #     ('BTC', 'Bitcoin'),
-    #     ('ETH', 'Ethereum'),
-    #     ('LTC', 'Litecoin'),
-    #     # Add more cryptocurrencies as needed
-    # ]
-    # currency = models.CharField(max_length=3, choices=CRYPTO_CHOICES)
-    currency = models.ForeignKey(CryptoCurrency, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
+# class Transactions(models.Model):
+#     currency = models.ForeignKey(CryptoCurrency, on_delete=models.CASCADE)
+#     amount = models.DecimalField(max_digits=10, decimal_places=2)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return f"{self.currency.name} - {self.amount}"
+#
+# CURRENCY_CHOICES = [
+#     ('USD', 'USD'),
+#     ('CAD', 'CAD'),
+#     ('EUR', 'EUR'),
+# ]
+#
+# TRANSACTION_CHOICES = [
+#     ('Buy', 'Buy'),
+#     ('Sell', 'Sell'),
+# ]
+class Wallet(models.Model):
+    user = models.OneToOneField(UserDetails, on_delete=models.CASCADE)
+    # currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return f"{self.currency.name} - {self.amount}"
-    
-#User-Profile Model
-# class UserProfile(models.Model):
-#     user = models.OneToOneField(UserDetails, on_delete = models.CASCADE) # cascade - if user deleted delete profile
-#     profile_image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+        return f"{self.user.username}'s Wallet"
 
-#     def __str__(self):
-#         return f'{self.user.username} Profile'
+class Transaction(models.Model):
+    user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
+    #currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    transaction_type = models.CharField(max_length=10)  # 'deposit' or 'purchase'
+
+
+    def __str__(self):
+        return f"{self.user.username}'s Transaction Details"
+
+class Purchase(models.Model):
+    user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
+    cryptocurrency = models.ForeignKey('CryptoCurrency', on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=10, decimal_places=2)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    #purchase_type = models.CharField(max_length=10, choices=TRANSACTION_CHOICES)  # 'deposit' or 'purchase'
+
+    def __str__(self):
+        return f"{self.user.username}'s purchase Details"
