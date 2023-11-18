@@ -231,17 +231,19 @@ ol, li {
         </select>
 
 
-
     <div class="profile-section">
     <div class="profile-section" style="position: relative;">
     <img src="../../static/person.svg" alt="Profile Image" id="profile-image">
     <div class="dropdown-content" id="dropdown" style="display: none; position: relative; background-color: #a71212; z-index: 1; width: 200px">
+
         {% if user_log %}
-            <a  href="{% url 'CryptoCrackers:profile' %}" style="width: 200px">{{user.username}}</a>
+           <a href="{% url 'CryptoCrackers:profile' %}" style="width: 200px">{{user.username}}</a>
+            <a href="{% url 'CryptoCrackers:logout' %}">Logout</a>
             <a id="dashboard-link">Dashboard</a>
         {% else %}
             <a id="login-link" style="width: 200px">Login / SignUp</a>
         {% endif %}
+
     </div>
     </div>
 </div>
