@@ -17,6 +17,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 def index(request):
     news = News.objects.all()
+    a  = False
     value = request.session.get('_user_id')
     wish_list =[]
     user = None
