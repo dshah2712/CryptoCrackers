@@ -205,11 +205,7 @@ def purchase_crypto(request):
 
 def dynamic_Crypto(request,coin_name):
 
-
     coin = get_object_or_404(CryptoCurrency, name=coin_name)
-
-
-
     plt.switch_backend('Agg')
     if coin.current_price < 1:
         coin.current_price = 10 + coin.current_price
@@ -308,7 +304,9 @@ def user_profile(request):
         # Get user details from the retrieved user id
         user = UserDetails.objects.get(id=value)
 
-        return render(request, 'FrontEnd/profile.html', {'user': user})
+        wish_list = user.wishlist
+        return render(request, 'FrontEnd/profile.html', {'user': user, 'wish_list': wish_list})
+        # return render(request, 'FrontEnd/profile.html', {'user': user})
 
     # if request.method == 'POST':
     #     print(request.POST['avatar'])
@@ -348,21 +346,12 @@ def delete_account(request):
     return render(request, 'FrontEnd/login.html', {'form': form})
 
 
-# def homePage(request):
-#     value = request.session.get('_user_id')
-#     user = UserDetails.objects.get(id=value)
-#     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
-#     print(coin_list)
-#
-#     return render(request, 'FrontEnd/index2.html',{'user': user, 'coins': coin_list})
-
-
 def wishlist(request):
     value = request.session.get('_user_id')
     user = UserDetails.objects.get(id=value)
     wish_list= user.wishlist
     print(wish_list)
-    return render(request, 'FrontEnd/wishlist.html',{"user":user, 'wish_list':wish_list })
+    return render(request, 'FrontEnd/profile.html',{"user":user, 'wish_list':wish_list })
 
 def add_to_wishlist(request,coin_name):
     value = request.session.get('_user_id')
@@ -374,11 +363,28 @@ def add_to_wishlist(request,coin_name):
     print("wishlist added",user)
     return redirect('/')
 
-def remove_to_wishlist(request,coin_name):
+# def remove_to_wishlist(request,coin_name):
+#     value = request.session.get('_user_id')
+#     user = UserDetails.objects.get(id=value)
+#     user.wishlist.remove(coin_name)
+#     user.save()
+#
+#     print("wishlist removed",user)
+#     # return redirect('CryptoCrackers:profile')
+#     #
+#     # return HttpResponseRedirect(reverse('profile'))
+#     return redirect('/')
+
+def remove_to_wishlist(request, coin_name):
     value = request.session.get('_user_id')
     user = UserDetails.objects.get(id=value)
-    user.wishlist.remove(coin_name)
-    user.save()
 
-    print("wishlist removed",user)
+    if coin_name in user.wishlist:
+        user.wishlist.remove(coin_name)
+        user.save()
+        print("wishlist removed", user)
+    else:
+        print(f"{coin_name} not found in wishlist")
+
+    # Redirect to the profile or another appropriate URL
     return redirect('/')

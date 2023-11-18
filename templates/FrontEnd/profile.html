@@ -20,7 +20,7 @@
         }
 
         .content {
-            width: 70%;
+            width: 40%;
             padding: 20px;
             background-color: #fff;
         }
@@ -31,7 +31,7 @@
         }
 
         .sidebar li {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .sidebar a {
@@ -42,7 +42,7 @@
         }
 
         .sidebar a:hover {
-            background-color: #ddd;
+            background-color: darkgrey;
         }
 
         .form-group {
@@ -87,12 +87,57 @@
         .delete-button:hover {
             background-color: darkred;
         }
+
+         ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        li {
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        img {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+            color: #3498db;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .wishlist-icon {
+            margin-top: 20px;
+        }
+
+        .wishlist-icon img {
+            width: 60px;
+            height: 60px;}
+
+
+
     </style>
 
     <script>
         // Function to toggle the visibility of sections
         function toggleSection(sectionId) {
-            var sections = ["profile-details", "account-security"];
+            var sections = ["profile-details", "account-security","wishlist"];
             sections.forEach(function (section) {
                 var element = document.getElementById(section);
                 if (section === sectionId) {
@@ -117,6 +162,7 @@
             <ul>
                 <li><a href="javascript:void(0);" onclick="toggleSection('profile-details')">Profile Details</a></li>
                 <li><a href="javascript:void(0);" onclick="toggleSection('account-security')">Account Security</a></li>
+                <li><a href="javascript:void(0);" onclick="toggleSection('wishlist')">Wishlist</a></li>
             </ul>
         </div>
         <div class="content">
@@ -129,6 +175,7 @@
                 {% endfor %}
             </ul>
             {% endif %}
+
 
             <div id="profile-details" style="display: block;">
                 <h1>Profile Details</h1>
@@ -159,6 +206,15 @@
                 </form>
             </div>
 
+
+
+
+
+
+
+
+
+
             <div id="account-security" style="display: none;">
                 <h1>Account Security</h1>
                 <form action="accountsecurity/" method="post">
@@ -186,8 +242,24 @@
                     <button class="delete-button" type="submit">Delete Account</button>
                 </form>
             </div>
+        <div id="wishlist" style="display: none;">
+            <h1>Wishlist</h1>
+            <ul>
+                {% for wishlist_item in wish_list %}
+                    <li>
+                        <a href="{% url 'CryptoCrackers:dynamic_crypto' coin_name=wishlist_item %}">
+                            <span>{{ wishlist_item }}</span>
+                        </a>
+                        <a href="remove_to_wishlist/{{ wishlist_item }}">
+                            <img src="../../static/icon2.png" alt="Remove" title="Remove from Wishlist">
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
+     </div>
     </div>
+
 </main>
 <footer>
     <!-- Your website footer content here -->

@@ -94,8 +94,6 @@
       <td>{{ data.total_volume }}</td>
       <td><span style="color: #789;font-weight: normal;text-transform: uppercase ">{{ data.symbol }}</span> {{ data.circulating_supply }}</td>
     </tr>
-
-
                 {% endfor %}
             </tbody>
         </table>
@@ -175,7 +173,6 @@
 
     // Initially show the first set of news cards
     showNewsCards(currentCard);
-
     prevButton.addEventListener('click', function() {
         if (currentCard > 0) {
             currentCard -= 1;
