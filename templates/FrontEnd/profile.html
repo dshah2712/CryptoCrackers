@@ -183,24 +183,25 @@
                 <form action="" method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="avatar">Avatar:</label>
+                        <label for="avatar">Choose Avatar:</label>
+
                         <input type="text" id="avatar" name="avatar">
                     </div>
                     <div class="form-group">
                         <label for="username">Username:</label>
-                        <input type="text" value={{ user.username }} id="username" name="username">
+                        <input type="text" value="{{ user.username }}" id="username" name="username">
                     </div>
                     <div class="form-group">
                         <label for="birthdate">Birthdate:</label>
-                        <input type="text" value={{ user.date_of_birth }} id="birthdate" name="birthdate">
+                        <input type="text" value="{{ user.date_of_birth }}" id="birthdate" name="birthdate">
                     </div>
                     <div class="form-group">
-                        <label for="birthdate">First Name:</label>
-                        <input type="text" value={{ user.first_name }} id="firstname" name="firstname">
+                        <label for="firstname">First Name:</label>
+                        <input type="text" value="{{ user.first_name }}" id="firstname" name="firstname">
                     </div>
                     <div class="form-group">
                         <label for="lastname">Last Name:</label>
-                        <input type="text" value={{ user.last_name }} id="lastname" name="lastname">
+                        <input type="text" value="{{ user.last_name }}" id="lastname" name="lastname">
                     </div>
                     <button class="save-button" type="submit">Save</button>
                 </form>
@@ -262,7 +263,7 @@
 
 </main>
 <footer>
-    <!-- Your website footer content here -->
+
 </footer>
 </body>
 </html>

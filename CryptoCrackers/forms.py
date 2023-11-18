@@ -1,14 +1,14 @@
 from django import forms
-from .models import UserDetails, Transactions
+from .models import UserDetails, Wallet, CryptoCurrency, Purchase, Transaction
 
 
 class RegisterForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(),required= True)
+    password = forms.CharField(widget=forms.PasswordInput(), required=True)
     password_confirm = forms.CharField(widget=forms.PasswordInput(), label='Confirm Password', required=True)
 
     class Meta:
         model = UserDetails
-        fields = ['first_name', 'last_name', 'username', 'date_of_birth',  'id_image', 'email', 'password' ]
+        fields = ['first_name', 'last_name', 'username', 'date_of_birth', 'id_image', 'email', 'password']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -21,7 +21,7 @@ class RegisterForm(forms.ModelForm):
 
 class LoginForm(forms.Form):
     username = forms.CharField(required=True)
-    password = forms.CharField(widget=forms.PasswordInput(),required=True)
+    password = forms.CharField(widget=forms.PasswordInput(), required=True)
 
 
 class ForgotPasswordForm(forms.Form):
@@ -44,11 +44,31 @@ def _init_(self, *args, **kwargs):
     self.fields['username'].required = True
     self.fields['date_of_time'].required = True
 
+
+class AddMoneyForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ['amount']
+
+
 class PurchaseForm(forms.ModelForm):
     class Meta:
-        model = Transactions
-        fields = ['currency', 'amount']
+        model = Purchase
+        fields = ['cryptocurrency', 'quantity']
         widgets = {
-            'currency': forms.Select(attrs={'class': 'form-control'}),
-            'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cryptocurrency': forms.Select(attrs={'id': 'id_cryptocurrency'}),
+            'quantity': forms.TextInput(attrs={'id': 'id_quantity'}),
         }
+
+    def __init__(self, user_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cryptocurrency'].queryset = CryptoCurrency.objects.all()
+        self.user_id = user_id
+
+    def clean(self):
+        cleaned_data = super().clean()
+        cryptocurrency = cleaned_data.get('cryptocurrency')
+        quantity = cleaned_data.get('quantity')
+        total_amount = cryptocurrency.current_price_cad * quantity
+        cleaned_data['total_amount'] = total_amount
+        return cleaned_data
