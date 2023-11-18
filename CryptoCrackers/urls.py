@@ -1,6 +1,5 @@
 from django.urls import path, include, path
 from CryptoCrackers import views
-from .views import user_logout
 
 app_name = 'CryptoCrackers'
 

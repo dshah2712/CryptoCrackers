@@ -52,14 +52,6 @@ class CryptoCurrency(models.Model):
     def __str__(self):
         return self.name
 
-# class Transactions(models.Model):
-#     currency = models.ForeignKey(CryptoCurrency, on_delete=models.CASCADE)
-#     amount = models.DecimalField(max_digits=10, decimal_places=2)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#
-#     def __str__(self):
-#         return f"{self.currency.name} - {self.amount}"
-#
 # CURRENCY_CHOICES = [
 #     ('USD', 'USD'),
 #     ('CAD', 'CAD'),

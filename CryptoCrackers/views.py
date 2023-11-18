@@ -251,13 +251,6 @@ def dynamic_Crypto(request, coin_name):
     return render(request, 'FrontEnd/dynamicCrypto.html', context)
 
 
-# def homePage(request):
-#     value = request.session.get('_user_id')
-#     user = UserDetails.objects.get(id=value)
-#     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
-#     print(coin_list)
-#
-#     return render(request, 'FrontEnd/index2.html', {'user': user, 'coins': coin_list})
 
 def user_profile(request):
     if request.method == 'POST':
@@ -278,15 +271,7 @@ def user_profile(request):
 
         return render(request, 'FrontEnd/profile.html', {'user': user})
 
-    # if request.method == 'POST':
-    #     print(request.POST['avatar'])
-    # else:
-    #     #Retrive the user id from the session
-    #     value = request.session.get('_user_id')
-    #     #Get user details from the retrieved user id
-    #     user = UserDetails.objects.get(id=value)
-    #
-    #     return render(request, 'FrontEnd/profile.html', {'user': user})
+
 
 
 def passwd_change(request):
@@ -304,28 +289,6 @@ def passwd_change(request):
             # messages.error(request, "New password and confirm password do not match.")
     else:
         pass
-        # messages.error(request, "Current password is incorrect.")
-
-    # if user.social_auth.filter(provider='google-oauth2').exists():
-    #     # Redirect or display a message indicating that password change is not allowed
-    #     messages.warning(request, "You logged in through Google Authentication. Password change is not allowed.")
-    #     return redirect('FrontEnd/profile.html')
-    #
-    # if request.method == "POST":
-    #     currentPassword = request.POST['current-password']
-    #     if check_password(currentPassword, user.password):
-    #         if (request.POST['new-password'] == request.POST['confirm-password']):
-    #             user.password = make_password(request.POST['new-password'])
-    #             user.save()
-    #             # messages.success(request, "Password changed successfully.")
-    #         else:
-    #             pass
-    #             # messages.error(request, "New password and confirm password do not match.")
-    #     else:
-    #         pass
-    #         # messages.error(request, "Current password is incorrect.")
-    #
-    # return render(request, 'FrontEnd/profile.html')
 
 
 def delete_account(request):
@@ -339,14 +302,6 @@ def delete_account(request):
     return render(request, 'CryptoCrackers:login.html', {'form': form})
 
 
-# def homePage(request):
-#     value = request.session.get('_user_id')
-#     user = UserDetails.objects.get(id=value)
-#     coin_list = CryptoCurrency.objects.all().order_by('market_cap_rank')[:10]
-#     print(coin_list)
-#
-#     return render(request, 'FrontEnd/index2.html',{'user': user, 'coins': coin_list})
-
 def user_logout(request):
     request.session.flush()
     logout(request)
@@ -356,6 +311,9 @@ def user_logout(request):
 
 def wishlist(request):
     value = request.session.get('_user_id')
+    if not value:
+        # Redirect to login or handle the case where the user is not authenticated
+        return redirect('/login/')
     user = UserDetails.objects.get(id=value)
     wish_list = user.wishlist
     print(wish_list)
@@ -364,6 +322,9 @@ def wishlist(request):
 
 def add_to_wishlist(request, coin_name):
     value = request.session.get('_user_id')
+    if not value:
+        # Redirect to login or handle the case where the user is not authenticated
+        return redirect('/login/')
     user = UserDetails.objects.get(id=value)
     coin = get_object_or_404(CryptoCurrency, name=coin_name)
     user.wishlist.append(coin.name)
@@ -387,7 +348,7 @@ def add_money(request):
     user_id = request.session.get('_user_id')
     if not user_id:
         # Redirect to login or handle the case where the user is not authenticated
-        return redirect('login')  # Update 'login' to the actual login URL
+        return redirect('/login/')
 
     user_wallet, created = Wallet.objects.get_or_create(user_id=user_id)
 
@@ -420,7 +381,7 @@ def purchase_currency(request):
     user_id = request.session.get('_user_id')
     if not user_id:
         # Redirect to login or handle the case where the user is not authenticated
-        return redirect('login')  # Update 'login' to the actual login URL
+        return redirect('/login/')
 
     user_wallet, created = Wallet.objects.get_or_create(user_id=user_id)
 
@@ -444,11 +405,11 @@ def purchase_currency(request):
                     total_amount=total_amount,
                 )
                 print("successfull")
-                return JsonResponse({'success': 'Purchase successful.'})
+                return JsonResponse({'success': True})
 
             else:
                 print("failed")
-                return JsonResponse({'error': 'Insufficient balance to make the purchase.'})
+                return JsonResponse({'success': False})
     else:
         form = PurchaseForm(user_id)
 

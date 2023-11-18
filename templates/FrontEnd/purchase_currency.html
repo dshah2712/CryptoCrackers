@@ -33,46 +33,32 @@
             document.getElementById('totalAmount').innerText = totalAmount.toFixed(2);
       }
 
-      {#document.getElementById("purchaseForm").addEventListener("submit", function (event) {#}
-      {#    event.preventDefault(); // Prevent the default form submission#}
-      {##}
-      {#    // Use AJAX to submit the form data to your Django view#}
-      {#      const formData = new FormData(document.getElementById("purchaseForm"));#}
-      {##}
-      {#      fetch("{% url 'CryptoCrackers:purchase_currency' %}", {#}
-      {#          method: "POST",#}
-      {#          body: formData,#}
-      {#      })#}
-      {#      .then(response => response.json())#}
-      {#      .then(data => {#}
-      {#          // Display the message in a popup#}
-      {#          if (data.success) {#}
-      {#              alert("Purchase successful.");#}
-      {#              // Optionally, reset the form#}
-      {#              document.getElementById("purchaseForm").reset();#}
-      {#          } else {#}
-      {#              alert("Insufficient balance to make the purchase.");#}
-      {#          }#}
-      {#      })#}
-      {#      .catch(error => {#}
-      {#          console.error('Error:', error);#}
-      {#          // Handle error if needed#}
-      {#      });#}
-      {#  });#}
+      document.getElementById("purchaseForm").addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent the default form submission
 
-        // Handle success and error messages as pop-ups
-        var successMessage = "{{ success }}";
-        var errorMessage = "{{ error }}";
+          // Use AJAX to submit the form data to your Django view
+            const formData = new FormData(document.getElementById("purchaseForm"));
 
-        if (successMessage) {
-          alert(successMessage);
-          document.getElementById("purchaseForm").reset();
-        }
-
-        if (errorMessage) {
-          alert(errorMessage);
-        }
-
+            fetch("{% url 'CryptoCrackers:purchase_currency' %}", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the message in a popup
+                if (data.success) {
+                    alert("Purchase successful.");
+                    // Optionally, reset the form
+                    document.getElementById("purchaseForm").reset();
+                } else {
+                    alert("Insufficient balance to make the purchase.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error if needed
+            });
+        });
   </script>
 </body>
 
