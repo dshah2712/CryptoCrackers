@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coin Search</title>
-{#    <link rel="stylesheet" href="../../static/css/styles.css">#}
     <link rel="stylesheet" href="../../static/css/news.css">
     <link rel="stylesheet" href="../../static/css/dashboard.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -219,36 +218,34 @@ ol, li {
 
     <div class="container">
         <div class="navbar">
-            <a href="#">Home</a>
-            <a href="#">About</a>
-            <a href="#">Services</a>
-            <a href="#">Products</a>
-
-        <select id="currencySelector">
-            <option value="usd" selected>USD</option>
-            <option value="cad">CAD</option>
-            <option value="eur">EUR</option>
-        </select>
-
-
-    <div class="profile-section">
-    <div class="profile-section" style="position: relative;">
-    <img src="../../static/person.svg" alt="Profile Image" id="profile-image">
-    <div class="dropdown-content" id="dropdown" style="display: none; position: relative; background-color: #a71212; z-index: 1; width: 200px">
-
+      <ul>
+      <li><a href="{% url 'CryptoCrackers:wishlist' %}" onclick="redirectToWishlist()">My Wishlist</a></li>
+      <li><a href="#">Home</a></li>
+    <li style="color: #424961">Price :
+      <select id="currencySelector">
+          <option value="usd" selected>USD</option>
+          <option value="cad">CAD</option>
+          <option value="eur">EUR</option>
+      </select>
+    </li>
+  <li class="profile"><img src="../../static/person.svg" alt="Profile Image" id="profile-image"/>
+  <div class="sub-menu-1">
+    <ul>
         {% if user_log %}
-           <a href="{% url 'CryptoCrackers:profile' %}" style="width: 200px">{{user.username}}</a>
-            <a href="{% url 'CryptoCrackers:logout' %}">Logout</a>
-            <a id="dashboard-link">Dashboard</a>
+            <li ><a href="{% url 'CryptoCrackers:profile' %}" style="width: 200px">{{user.username}}</a></li>
+            <li><a href="{% url 'CryptoCrackers:logout' %}">Logout</a></li>
         {% else %}
-            <a id="login-link" style="width: 200px">Login / SignUp</a>
+            <li><a href="{% url 'CryptoCrackers:login' %}">Login</a></li>
+            <li><a href="{% url 'CryptoCrackers:signup' %}">SignUp</a></li>
         {% endif %}
 
-    </div>
-    </div>
-</div>
+    </ul>
+  </div>
+  </li>
 
-    </div>
+</ul>
+
+</div>
 
 <div class="highlight-container" id="highlight_section">
 <h2>Highlight Section</h2>

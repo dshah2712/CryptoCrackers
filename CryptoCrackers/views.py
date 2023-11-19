@@ -367,8 +367,9 @@ def wishlist(request):
     user = UserDetails.objects.get(id=value)
     wish_list = user.wishlist
     print(wish_list)
+
     return render(request, 'FrontEnd/profile.html',{"user":user, 'wish_list':wish_list })
-    return render(request, 'FrontEnd/wishlist.html', {"user": user, 'wish_list': wish_list})
+    # return render(request, 'FrontEnd/wishlist.html', {"user": user, 'wish_list': wish_list})
 
 
 

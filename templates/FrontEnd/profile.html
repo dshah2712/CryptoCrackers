@@ -138,6 +138,7 @@
         // Function to toggle the visibility of sections
         function toggleSection(sectionId) {
             var sections = ["profile-details", "account-security","wishlist"];
+            console.log(sectionId)
             sections.forEach(function (section) {
                 var element = document.getElementById(section);
                 if (section === sectionId) {
@@ -147,6 +148,10 @@
                 }
             });
         }
+
+        function redirectToWishlist() {
+        toggleSection('wishlist');
+         }
     </script>
 </head>
 <body>
