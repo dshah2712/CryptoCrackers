@@ -1,6 +1,4 @@
 from django import forms
-from django.shortcuts import get_object_or_404
-
 from .models import UserDetails, Wallet, CryptoCurrency, Purchase, Transaction
 
 
@@ -81,14 +79,6 @@ class PurchaseForm(forms.ModelForm):
         cleaned_data = super().clean()
         cryptocurrency = cleaned_data.get('cryptocurrency')
         quantity = cleaned_data.get('quantity')
-
-
-        # wallet = Wallet.objects.get(user_id=self.user_id)
         total_amount = cryptocurrency.current_price_cad * quantity
-        #
-        # if wallet.balance < total_amount:
-        #     raise forms.ValidationError("Insufficient balance to make the purchase.")
-
         cleaned_data['total_amount'] = total_amount
-        # cleaned_data['available_balance'] = wallet.balance
         return cleaned_data

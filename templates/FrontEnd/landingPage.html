@@ -8,7 +8,11 @@
       <div id="box2">
         <div id="text">
           CryptoCrackers
+          <p>Explore the world of cryptocurrency with cryptocrackers. You are just a click away to dive into the world</p>
+          <a href="{% url 'CryptoCrackers:index' %}" class="get-started-button">Get Started</a>
+
         </div>
+
       </div>
 
       <div id="box3">
@@ -19,8 +23,8 @@
           <div id="menu">
             <ul>
               <li><a  href="{% url 'CryptoCrackers:index' %}" style="">Home</a></li>
-              <li>Dashboard</li>
-              <li>About us</li>
+              <li><a  href="{% url 'CryptoCrackers:login' %}" style="">Login</a></li>
+              <li><a  href="{% url 'CryptoCrackers:signup' %}" style="">Sign Up</a></li>
             </ul>
           </div>
         </div>
