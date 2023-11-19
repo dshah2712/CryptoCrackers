@@ -2,13 +2,13 @@ import json
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm
+from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm,ChangePasswordForm
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from .models import UserDetails, CryptoCurrency, News, Wallet, Purchase, Transaction
 import matplotlib as mpl
-
+import random
 mpl.use('Agg')  # Use the 'Agg' backend, which is non-interactive and works well in various environments
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -20,10 +20,11 @@ import numpy as np
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
-
+from django.core.mail import send_mail
+from django.conf import settings
 def index(request):
     news = News.objects.all()
     a  = False
@@ -141,15 +142,56 @@ def user_signup(request):
     return render(request, 'FrontEnd/signup.html', {'form': form})
 
 
+
+def send_forgotpassword_mail(request):
+    print("forgot pass clicked")
+
+    return HttpResponseRedirect(reverse('CryptoCrackers:forgotpassword'))
+
 def forgot_password(request):
     if request.method == 'POST':
-        form = ForgotPasswordForm(request.POST, request.FILES)
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            print("email entered is: ",email)
+            try:
 
-        # print("forgot password")
+                email_user = UserDetails.objects.get(email=email)
+                if email_user.password is None:
+                    form.add_error(None, 'Google Auth Sign In Required')
+                else:
+                    otp = random.randint(100000, 999999)
+                    request.session['otp'] = otp
+                    message = "This is the " + str(otp) + "."
+                    send_mail(
+                        "One-Time Password",
+                        message,
+                        settings.EMAIL_HOST,
+                        [email],
+                        fail_silently=False,
+                    )
+                    return HttpResponseRedirect(reverse('CryptoCrackers:changepassword'))
+            except UserDetails.DoesNotExist:
+                form.add_error(None, 'Enter correct email id')
+
+    else:
+        form = ForgotPasswordForm()
+    return render(request, 'FrontEnd/forgotpassword.html', {"form": form})
+
+
+
+
+def change_password(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST, request.FILES)
+        print("details: ",request.POST.get('email'))
+
+        print("forgot password")
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             confirm_password = form.cleaned_data['confirm_password']
+            otp = form.cleaned_data['otp']
             try:
                 user = UserDetails.objects.get(username=username)
                 print("user details are:", user.password)
@@ -157,22 +199,26 @@ def forgot_password(request):
                 if user.password is None:
                     form.add_error(None, 'Google Auth Sign In Required')
                 else:
-                    if password == confirm_password:
-                        print("pass match")
-                        user.password = make_password(password)
-                        user.save()
-                        # print("new pass: ",user.password)
-                        return redirect('/login/')
+                    if request.session.get('otp') and otp == request.session.get('otp'):
+
+                        if password == confirm_password:
+                            print("pass match")
+                            user.password = make_password(password)
+                            user.save()
+                            # print("new pass: ",user.password)
+                            return redirect('/login/')
+                        else:
+                            print("pass not match")
+                            form.add_error(None, 'Password does not match')
                     else:
-                        print("pass not match")
-                        form.add_error(None, 'Password does not match')
+                        form.add_error(None, 'OTP does not match')
             except UserDetails.DoesNotExist:
                 form.add_error(None, 'User does not exist')
 
 
     else:
-        form = ForgotPasswordForm()
-    return render(request, 'FrontEnd/forgotpassword.html', {'form': form})
+        form = ChangePasswordForm()
+    return render(request, 'FrontEnd/changepassword.html',{"form":form})
 
 
 def dynamic_Crypto(request, coin_name):
@@ -278,15 +324,7 @@ def user_profile(request):
 
         return render(request, 'FrontEnd/profile.html', {'user': user})
 
-    # if request.method == 'POST':
-    #     print(request.POST['avatar'])
-    # else:
-    #     #Retrive the user id from the session
-    #     value = request.session.get('_user_id')
-    #     #Get user details from the retrieved user id
-    #     user = UserDetails.objects.get(id=value)
-    #
-    #     return render(request, 'FrontEnd/profile.html', {'user': user})
+
 
 
 def passwd_change(request):

@@ -26,16 +26,26 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(), required=True)
 
 
-class ForgotPasswordForm(forms.Form):
+class ChangePasswordForm(forms.Form):
     username = forms.CharField(required=True)
+    otp = forms.IntegerField(
+        label='Enter a 6-digit number',
+        min_value=100000,
+        max_value=999999,
+        widget=forms.NumberInput(attrs={'placeholder': 'Enter a 6-digit number'})
+    )
     password = forms.CharField(
         label="Password",
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password', 'autocomplete': 'new-password'})
     )
     confirm_password = forms.CharField(
         label="Confirm Password",
         widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
     )
+
+
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(required=True)
 
 
 def _init_(self, *args, **kwargs):
