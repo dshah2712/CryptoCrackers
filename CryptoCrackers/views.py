@@ -107,9 +107,14 @@ def user_login(request):
                             # return HttpResponseRedirect(reverse('CryptoCrackers:profile'))
                         else:
                             form.add_error(None, 'Invalid login credentials')
+                            return redirect('/login')
+                # else:
+                #     form.add_error(None, 'User Does Not Exist')
+                #     return redirect('/')                    
 
             except UserDetails.DoesNotExist:
                 form.add_error(None, 'User does not exist')
+                return redirect('/login')     
     else:
         form = LoginForm()
         return render(request, 'FrontEnd/login.html', {'form': form})
@@ -377,23 +382,25 @@ def passwd_change(request):
         if (request.POST['new-password'] == request.POST['confirm-password']):
             user.password = make_password(request.POST['new-password'])
             user.save()
-            # messages.success(request, "Password changed successfully.")
+            messages.success(request, "Password changed successfully.")
+            return redirect('/userprofile')
         else:
-            pass
-            # messages.error(request, "New password and confirm password do not match.")
+            messages.error(request, "New password and confirm password do not match.")
+            return redirect('/userprofile')
     else:
-        pass
+        messages.error(request, "Current password is incorrect")
+        return redirect('/userprofile')
 
 
 def delete_account(request):
-    value = request.session.get('_user_id')
-    user = UserDetails.objects.get(id=value)
-    print(user)
-    user.delete()
-    print(user)
+    if request.method == 'POST':
+        value = request.session.get('_user_id')
+        user = UserDetails.objects.get(id=value)
+        user.delete()
+        request.session.flush()
+        return redirect('/')
 
-    form = LoginForm()
-    return render(request, 'CryptoCrackers:login.html', {'form': form})
+    return HttpResponse("Invalid request method", status=405)
 
 
 

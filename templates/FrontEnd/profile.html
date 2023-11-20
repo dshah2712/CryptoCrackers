@@ -152,6 +152,14 @@
         function redirectToWishlist() {
         toggleSection('wishlist');
          }
+
+         function confirmDelete(){
+            var confirmation = confirm("Are you sure you want to delete your account? This action is irreversible.");
+            if (confirmation)
+                document.getElementById('delete-account-form').submit();
+
+         }
+         
     </script>
 </head>
 <body>
@@ -238,6 +246,7 @@
                         <input type="password" id="confirm-password" name="confirm-password">
                     </div>
                     <button class="save-button" type="submit">Change Password</button>
+                    <p>{{ error }}</p>
                 </form>
 
 
@@ -245,7 +254,7 @@
                 <p>Deleting your account is irreversible and will remove all your data.</p>
                 <form action="delete_account/" method="post">
                     {% csrf_token %}
-                    <button class="delete-button" type="submit">Delete Account</button>
+                    <button class="delete-button" onclick="confirmDelete()" type="submit">Delete Account</button>
                 </form>
             </div>
         <div id="wishlist" style="display: none;">
