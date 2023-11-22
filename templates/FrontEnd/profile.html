@@ -309,7 +309,7 @@
 {#                        {% endfor %}#}
 {#                    </ul>#}
 {#                {% endif %}#}
-                <form action="{% url 'CryptoCrackers:purchase_currency' %}" method="post" id="purchaseForm">
+                <form method="post" id="purchaseForm">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <button class="save-button" type="button" onclick="calculateTotal()">Calculate Total</button>
@@ -323,22 +323,27 @@
 {#                        <p style="color: red;">Please upload a valid ID image before purchasing cryptocurrency.</p>#}
 {##}
 {#                    {% endif %}#}
-                  </form>
+                </form>
             </div>
 
             <script>
-                  const cryptoChoices = JSON.parse('{{ crypto_choices_json|escapejs }}');
 
-                  function calculateTotal() {
-                        const selectedCrypto = document.getElementById('id_cryptocurrency');
+                const cryptoChoices = JSON.parse('{{ crypto_choices_json|escapejs }}');
+
+                function calculateTotal() {
+                    const form = document.getElementById('purchaseForm');
+
+                    // Use the name attribute to select the elements
+                    const selectedCrypto = form.elements['cryptocurrency'];
+                    const quantityInput = form.elements['quantity'];
+
+                    // Check if the elements exist and continue with calculations
+                    if (selectedCrypto && quantityInput) {
                         const selectedIndex = selectedCrypto.selectedIndex;
 
                         if (selectedIndex !== -1) {
-                            const cryptoPrice = parseFloat(cryptoChoices[selectedIndex].price);
-                            const quantityInput = document.getElementById('id_quantity'); //error in this line
+                            const cryptoPrice = parseFloat(cryptoChoices[selectedIndex-1].price);
                             const quantity = parseFloat(quantityInput.value);
-
-
 
                             console.log('cryptoPrice:', cryptoPrice);
                             console.log('quantity:', quantity);
@@ -353,7 +358,9 @@
                         } else {
                             alert('Please select a cryptocurrency.');
                         }
-                  }
+                    }
+                }
+
 
                   document.getElementById("purchaseForm").addEventListener("submit", function (event) {
                       event.preventDefault(); // Prevent the default form submission
