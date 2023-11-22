@@ -3,15 +3,6 @@
 <head>
 	<title>Signup Page</title>
 	<link rel="stylesheet" href="../../static/css/style.css">
-                  <h1>Purchase Crypto Currency</h1>
-                  <p>Available Balance: ${{ balance }}</p>
-                  <form action="{% url 'CryptoCrackers:purchase_currency' %}" method="post" id="purchaseForm">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button class="save-button" type="button" onclick="calculateTotal()">Calculate Total</button>
-                    <p>Total Amount: $<span id="totalAmount">0.00</span></p>
-                    <button class="save-button" type="submit">Purchase</button>
-                  </form>
 
 </head>
 <body>
