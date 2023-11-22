@@ -8,7 +8,7 @@ class RegisterForm(forms.ModelForm):
 
     class Meta:
         model = UserDetails
-        fields = ['first_name', 'last_name', 'username', 'date_of_birth', 'id_image', 'email', 'password']
+        fields = ['first_name', 'last_name', 'username', 'email', 'password']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -52,8 +52,6 @@ def _init_(self, *args, **kwargs):
     self.fields['last_name'].required = True
     self.fields['email'].required = True
     self.fields['username'].required = True
-    self.fields['date_of_time'].required = True
-
 
 class AddMoneyForm(forms.ModelForm):
     class Meta:
@@ -62,6 +60,8 @@ class AddMoneyForm(forms.ModelForm):
 
 
 class PurchaseForm(forms.ModelForm):
+    # quantity = forms.DecimalField(widget=forms.TextInput(attrs={'id': 'id_quantity', 'step': 'any'}))
+
     class Meta:
         model = Purchase
         fields = ['cryptocurrency', 'quantity']
@@ -82,3 +82,5 @@ class PurchaseForm(forms.ModelForm):
         total_amount = cryptocurrency.current_price_cad * quantity
         cleaned_data['total_amount'] = total_amount
         return cleaned_data
+
+

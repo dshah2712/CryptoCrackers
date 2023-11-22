@@ -23,7 +23,8 @@ urlpatterns = [
     path('userprofile/remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
     path('wishlist/', views.wishlist, name='wishlist'),
     path('landing/', views.landing, name='landing'),
-    path('add_money/', views.add_money, name='add_money'),
-    path('purchase_currency/', views.purchase_currency, name='purchase_currency'),
-    # path('home/', views.homePage, name='home'),
+    path('userprofile/add_money/', views.add_money, name='add_money'),
+    path('userprofile/purchase_currency/', views.purchase_currency, name='purchase_currency'),
+    # path('add_money/', views.add_money, name='add_money'),
+    # path('purchase_currency/', views.purchase_currency, name='purchase_currency'),
     ]

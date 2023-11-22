@@ -135,23 +135,46 @@
     </style>
 
     <script>
+
+        window.addEventListener('load', function(event) {
+            event.preventDefault();
+
+            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency"];
+            var sectionId = "{{ id|escapejs }}";
+            {#var sectionId = {{ id }}#}
+
+
+            sections.forEach((i)=>{
+                element = document.getElementById(i);
+                console.log("element: ",element)
+                element.style.display = "none";
+            })
+
+            document.getElementById(sectionId).style.display = 'block';
+            {#window.location.href = "{% url 'CryptoCrackers:add_money' %}"#}
+
+              // Use the |escapejs filter to escape special characters
+            {#console.log("User:", username);#}
+            console.log("Window is ready",username);
+
+        });
         // Function to toggle the visibility of sections
-        function toggleSection(sectionId) {
-            var sections = ["profile-details", "account-security","wishlist"];
-            console.log(sectionId)
-            sections.forEach(function (section) {
-                var element = document.getElementById(section);
-                if (section === sectionId) {
-                    element.style.display = "block";
-                } else {
-                    element.style.display = "none";
-                }
-            });
+
+        function accountSecurity() {
+            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency"];
+
+
+            sections.forEach((index)=>{
+                document.getElementById(index).style.display = "none"
+
+            })
+
+
+
+            document.getElementById('account-security').style.display = "block"
         }
 
-        function redirectToWishlist() {
-        toggleSection('wishlist');
-         }
+
 
          function confirmDelete(){
             var confirmation = confirm("Are you sure you want to delete your account? This action is irreversible.");
@@ -159,7 +182,7 @@
                 document.getElementById('delete-account-form').submit();
 
          }
-         
+
     </script>
 </head>
 <body>
@@ -173,9 +196,11 @@
     <div class="profile-container">
         <div class="sidebar">
             <ul>
-                <li><a href="javascript:void(0);" onclick="toggleSection('profile-details')">Profile Details</a></li>
-                <li><a href="javascript:void(0);" onclick="toggleSection('account-security')">Account Security</a></li>
-                <li><a href="javascript:void(0);" onclick="toggleSection('wishlist')">Wishlist</a></li>
+                <li><a href="{% url 'CryptoCrackers:profile' %}" >Profile Details</a></li>
+                <li><a onclick="accountSecurity()" >Account Security</a></li>
+                <li><a href="{% url 'CryptoCrackers:wishlist' %}" >Wishlist</a></li>
+                <li><a href="{% url 'CryptoCrackers:add_money' %}" >Add Money to Wallet</a></li>
+                <li><a href="{% url 'CryptoCrackers:purchase_currency' %}" >Purchase Crypto Currency</a></li>
             </ul>
         </div>
         <div class="content">
@@ -220,20 +245,11 @@
                 </form>
             </div>
 
-
-
-
-
-
-
-
-
-
             <div id="account-security" style="display: none;">
                 <h1>Account Security</h1>
                 <form action="accountsecurity/" method="post">
                     {% csrf_token %}
-                    <div class="form-group">
+                    <div class="frm-group">
                         <label for="current-password">Current Password:</label>
                         <input type="password" id="current-password" name="current-password">
                     </div>
@@ -257,21 +273,147 @@
                     <button class="delete-button" onclick="confirmDelete()" type="submit">Delete Account</button>
                 </form>
             </div>
-        <div id="wishlist" style="display: none;">
-            <h1>Wishlist</h1>
-            <ul>
-                {% for wishlist_item in wish_list %}
-                    <li>
-                        <a href="{% url 'CryptoCrackers:dynamic_crypto' coin_name=wishlist_item %}">
-                            <span>{{ wishlist_item }}</span>
-                        </a>
-                        <a href="remove_to_wishlist/{{ wishlist_item }}">
-                            <img src="../../static/icon2.png" alt="Remove" title="Remove from Wishlist">
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+
+            <div id="wishlist" style="display: none;">
+                <h1>Wishlist</h1>
+                <ul>
+                    {% for wishlist_item in wish_list %}
+                        <li>
+                            <a href="{% url 'CryptoCrackers:dynamic_crypto' coin_name=wishlist_item %}">
+                                <span>{{ wishlist_item }}</span>
+                            </a>
+                            <a href="remove_to_wishlist/{{ wishlist_item }}">
+                                <img src="../../static/icon2.png" alt="Remove" title="Remove from Wishlist">
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div id="add-money" style=" display: none;">
+                  <h1>Add money to Wallet</h1>
+                  <p>Available Balance: ${{ balance }}</p>
+                  <form method="post" id="addmoney">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="save-button" type="submit">Add Money</button>
+                  </form>
+            </div>
+
+            <div id="purchase-currency" style="display: none;">
+                  <h1>Purchase Crypto Currency</h1>
+                  <p>Available Balance: ${{ balance }}</p>
+{#                {% if messages %}#}
+{#                    <ul class="messages">#}
+{#                        {% for message in messages %}#}
+{#                            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                {% endif %}#}
+                <form action="{% url 'CryptoCrackers:purchase_currency' %}" method="post" id="purchaseForm">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="save-button" type="button" onclick="calculateTotal()">Calculate Total</button>
+                    <p>Total Amount: $<span id="totalAmount">0.00</span></p>
+{#                    <button class="save-button" type="submit">Purchase</button>#}
+{#                    {% if user.id_image %}#}
+
+                    <button class="save-button" type="submit">Purchase</button>
+{#                    {% else %}#}
+{#                        <button class="save-button" type="button" disabled>Purchase</button>#}
+{#                        <p style="color: red;">Please upload a valid ID image before purchasing cryptocurrency.</p>#}
+{##}
+{#                    {% endif %}#}
+                  </form>
+            </div>
+
+            <script>
+                  const cryptoChoices = JSON.parse('{{ crypto_choices_json|escapejs }}');
+
+                  function calculateTotal() {
+                        const selectedCrypto = document.getElementById('id_cryptocurrency');
+                        const selectedIndex = selectedCrypto.selectedIndex;
+
+                        if (selectedIndex !== -1) {
+                            const cryptoPrice = parseFloat(cryptoChoices[selectedIndex].price);
+                            const quantityInput = document.getElementById('id_quantity'); //error in this line
+                            const quantity = parseFloat(quantityInput.value);
+
+
+
+                            console.log('cryptoPrice:', cryptoPrice);
+                            console.log('quantity:', quantity);
+
+                            if (!isNaN(quantity)) {
+                                const totalAmount = cryptoPrice * quantity;
+                                console.log('totalAmount:', totalAmount);
+                                document.getElementById('totalAmount').innerText = totalAmount.toFixed(2);
+                            } else {
+                                alert('Please enter a valid quantity.');
+                            }
+                        } else {
+                            alert('Please select a cryptocurrency.');
+                        }
+                  }
+
+                  document.getElementById("purchaseForm").addEventListener("submit", function (event) {
+                      event.preventDefault(); // Prevent the default form submission
+
+                      // Use AJAX to submit the form data to your Django view
+                        const formData = new FormData(document.getElementById("purchaseForm"));
+
+                        fetch("{% url 'CryptoCrackers:purchase_currency' %}", {
+                            method: "POST",
+                            body: formData,
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Display the message in a popup
+                            if (data.success) {
+                                alert("Purchase successful.");
+                                // Optionally, reset the form
+                                document.getElementById("purchaseForm").reset();
+                            } else {
+                                alert("Insufficient balance to make the purchase.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            // Handle error if needed
+                        });
+                  });
+
+                  document.getElementById("addmoney").addEventListener("submit", function (event) {
+                      event.preventDefault(); // Prevent the default form submission
+
+                      // Use AJAX to submit the form data to your Django view
+                      const formData = new FormData(document.getElementById("addmoney"));
+
+                      fetch("{% url 'CryptoCrackers:add_money' %}", {
+                        method: "POST",
+                        body: formData,
+                      })
+                        .then(response => response.json())
+                        .then(data => {
+                          // Display the message in a popup
+
+                          if (data.success) {
+                                alert("Money added successfully");
+                                // Optionally, reset the form
+                                document.getElementById("addmoney").reset();
+                            } else {
+                                alert("Error adding money");
+                            }
+
+                          // Optionally, reset the form
+                          document.getElementById("addmoney").reset();
+                        })
+                        .catch(error => {
+                          console.error('Error:', error);
+                          // Handle error if needed
+                        });
+                  });
+            </script>
+
      </div>
     </div>
 

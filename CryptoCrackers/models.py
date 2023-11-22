@@ -11,11 +11,9 @@ class UserDetails(models.Model):
     id_image = models.ImageField(upload_to='id_images/', null=True, blank=True)
     wishlist=models.JSONField(default=list,blank=True)
     cryptocurrencies = models.JSONField(default=dict)
-
-
     # avatar = models.ImageField(blank=True, null=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.username
 
 class News(models.Model):
@@ -55,16 +53,6 @@ class CryptoCurrency(models.Model):
     def __str__(self):
         return self.name
 
-# CURRENCY_CHOICES = [
-#     ('USD', 'USD'),
-#     ('CAD', 'CAD'),
-#     ('EUR', 'EUR'),
-# ]
-#
-# TRANSACTION_CHOICES = [
-#     ('Buy', 'Buy'),
-#     ('Sell', 'Sell'),
-# ]
 class Wallet(models.Model):
     user = models.OneToOneField(UserDetails, on_delete=models.CASCADE)
     # currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
@@ -75,7 +63,6 @@ class Wallet(models.Model):
 
 class Transaction(models.Model):
     user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
-    #currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
     transaction_type = models.CharField(max_length=10)  # 'deposit' or 'purchase'
@@ -90,7 +77,6 @@ class Purchase(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=2)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
-    #purchase_type = models.CharField(max_length=10, choices=TRANSACTION_CHOICES)  # 'deposit' or 'purchase'
 
     def __str__(self):
         return f"{self.user.username}'s purchase Details"

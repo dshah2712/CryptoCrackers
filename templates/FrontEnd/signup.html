@@ -3,6 +3,16 @@
 <head>
 	<title>Signup Page</title>
 	<link rel="stylesheet" href="../../static/css/style.css">
+                  <h1>Purchase Crypto Currency</h1>
+                  <p>Available Balance: ${{ balance }}</p>
+                  <form action="{% url 'CryptoCrackers:purchase_currency' %}" method="post" id="purchaseForm">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="save-button" type="button" onclick="calculateTotal()">Calculate Total</button>
+                    <p>Total Amount: $<span id="totalAmount">0.00</span></p>
+                    <button class="save-button" type="submit">Purchase</button>
+                  </form>
+
 </head>
 <body>
 	<div class="container">
@@ -10,16 +20,16 @@
 		<form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-			<label for="imageDropdown">Select an Image:</label>
-    <select id="imageDropdown" name="imageDropdown">
-        <option value="image1"> <!-- You can set a unique value for each option -->
-            <img src="https://cdn.iconscout.com/icon/free/png-512/free-avatar-370-456322.png?f=webp&w=512" alt="Image 1">
-        </option>
-        <option value="image2">
-            <img src="https://cdn.iconscout.com/icon/free/png-512/free-avatar-370-456322.png?f=webp&w=512" alt="Image 2">
-        </option>
-        <!-- Add more options as needed -->
-    </select>
+{#			<label for="imageDropdown">Select an Image:</label>#}
+{#    <select id="imageDropdown" name="imageDropdown">#}
+{#        <option value="image1"> <!-- You can set a unique value for each option -->#}
+{#            <img src="https://cdn.iconscout.com/icon/free/png-512/free-avatar-370-456322.png?f=webp&w=512" alt="Image 1">#}
+{#        </option>#}
+{#        <option value="image2">#}
+{#            <img src="https://cdn.iconscout.com/icon/free/png-512/free-avatar-370-456322.png?f=webp&w=512" alt="Image 2">#}
+{#        </option>#}
+{#        <!-- Add more options as needed -->#}
+{#    </select>#}
 
             <button type="submit">Register</button>
 		</form>
