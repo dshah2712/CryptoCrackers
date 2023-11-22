@@ -85,6 +85,8 @@ def landing(request):
 
 
 def user_login(request):
+    if request.session.get('_user_id'):
+        return HttpResponseRedirect(reverse('CryptoCrackers:index'))
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -135,6 +137,8 @@ def process_form(request):
 
 
 def user_signup(request):
+    if request.session.get('_user_id'):
+        return HttpResponseRedirect(reverse('CryptoCrackers:index'))
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
@@ -149,11 +153,17 @@ def user_signup(request):
 
 
 def send_forgotpassword_mail(request):
+
+    # print("user: ",request.session.get('_user_id'))
+    if request.session.get('_user_id'):
+        return HttpResponseRedirect(reverse('CryptoCrackers:index'))
     print("forgot pass clicked")
 
     return HttpResponseRedirect(reverse('CryptoCrackers:forgotpassword'))
 
 def forgot_password(request):
+    if request.session.get('_user_id'):
+        return HttpResponseRedirect(reverse('CryptoCrackers:index'))
     if request.method == 'POST':
         form = ForgotPasswordForm(request.POST)
         if form.is_valid():
