@@ -358,7 +358,6 @@ def dynamic_Crypto(request, coin_name):
     return render(request, 'FrontEnd/dynamicCrypto.html', context)
 
 
-
 def user_profile(request):
     if request.method == 'POST':
         print(request.POST['avatar'])
@@ -520,7 +519,6 @@ def purchase_currency(request):
             print("userBalance: ",user_wallet.balance)
             if user_wallet.balance >= total_amount:
                 user_wallet.balance -= total_amount
-                user_wallet.save()
 
                 Purchase.objects.create(
                     user_id=user_id,
@@ -528,6 +526,23 @@ def purchase_currency(request):
                     quantity=quantity,
                     total_amount=total_amount,
                 )
+                user = UserDetails.objects.get(id=user_id)
+
+                # Get the current cryptocurrencies of the user
+                cryptocurrencies = user.cryptocurrencies
+
+                # If the user has already bought this cryptocurrency, add the quantity to the existing quantity
+                if cryptocurrency.name in cryptocurrencies:
+                    cryptocurrencies[cryptocurrency.name] += int(quantity)
+                else:
+                    # If the user has not bought this cryptocurrency before, add it to the dictionary
+                    cryptocurrencies[cryptocurrency.name] = int(quantity)
+
+                # Save the updated cryptocurrencies dictionary
+                user.cryptocurrencies = cryptocurrencies
+                user_wallet.save()
+                user.save()
+
                 print("successfull")
                 return JsonResponse({'success': True})
 

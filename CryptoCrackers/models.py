@@ -10,6 +10,9 @@ class UserDetails(models.Model):
     date_of_birth = models.DateField(blank=True, null = True)
     id_image = models.ImageField(upload_to='id_images/', null=True, blank=True)
     wishlist=models.JSONField(default=list,blank=True)
+    cryptocurrencies = models.JSONField(default=dict)
+
+
     # avatar = models.ImageField(blank=True, null=True)
 
     def _str_(self):
