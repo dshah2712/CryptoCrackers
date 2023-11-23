@@ -366,8 +366,8 @@ def user_profile(request):
         user.first_name = request.POST['firstname']
         user.username = request.POST['username']
         user.last_name = request.POST['lastname']
-        if len(request.FILES) != 0:
-            user.id_image = request.FILES['id_image']
+        # if len(request.FILES) != 0:
+        #     user.id_image = request.FILES['id_image']
 
         user.save()
         return render(request, 'FrontEnd/profile.html', {'user': user})
@@ -568,6 +568,7 @@ def purchase_currency(request):
                           CryptoCurrency.objects.all()]
         crypto_choices_json = json.dumps(crypto_choices, cls=DjangoJSONEncoder)
 
+        user = UserDetails.objects.get(pk=user_id)
         return render(request, 'FrontEnd/profile.html',
                       {'form': form, 'balance': user_wallet.balance, 'crypto_choices_json': crypto_choices_json,
-                       'id': "purchase-currency"})
+                       'id': "purchase-currency", "user": user})
