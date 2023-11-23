@@ -366,6 +366,9 @@ def user_profile(request):
         user.first_name = request.POST['firstname']
         user.username = request.POST['username']
         user.last_name = request.POST['lastname']
+        if len(request.FILES) != 0:
+            user.id_image = request.FILES['id_image']
+
         user.save()
         return render(request, 'FrontEnd/profile.html', {'user': user})
     else:
@@ -373,7 +376,7 @@ def user_profile(request):
         value = request.session.get('_user_id')
         # Get user details from the retrieved user id
         user = UserDetails.objects.get(id=value)
-
+        # img = user.objects.filter(file_type='image')
         wish_list = user.wishlist
         return render(request, 'FrontEnd/profile.html', {'user': user, 'wish_list': wish_list, 'id': "profile-details"})
         # return render(request, 'FrontEnd/profile.html', {'user': user})
