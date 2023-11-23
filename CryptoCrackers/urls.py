@@ -30,5 +30,3 @@ urlpatterns = [
     # path('purchase_currency/', views.purchase_currency, name='purchase_currency'),
     ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

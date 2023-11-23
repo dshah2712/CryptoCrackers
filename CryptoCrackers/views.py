@@ -317,23 +317,15 @@ def dynamic_Crypto(request, coin_name):
     #     spine.set_visible(False)
 
     # Hide the y-axis
-    ax.get_yaxis().set_visible(False)
-    ax.spines['top'].set_visible(False)
+    # ax.get_yaxis().set_visible(False)
     ax.spines['right'].set_visible(False)
-    ax.spines['left'].set_visible(False)
-    ax.spines['bottom'].set_visible(True)
+    ax.spines['top'].set_visible(False)
+
+
     # ax.spines['bottom'].set_linewidth(0)
     # current_price = prices[-1]
     # price_change =
-    percentage_change = .15 * 100
-    # Use ax.text() to add annotations to the plot
-    ax.text(0.03, 0.97, f'USD${coin.current_price:,.2f}',
-            transform=ax.transAxes, fontsize=14,
-            verticalalignment='top', bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.3))
 
-    ax.text(0.03, 0.92, f'↗USD${15:,.2f} ({percentage_change:.2f}%)',
-            transform=ax.transAxes, fontsize=12,
-            verticalalignment='top', bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.3))
 
     # Remaining plot code...
 
@@ -349,6 +341,7 @@ def dynamic_Crypto(request, coin_name):
 
     # Construct the image src data URI
     image_url = f"data:image/png;base64,{image_base64}"
+    coin.current_price = "{:,.2f}".format(coin.current_price)
     context = {
         "coin": coin,
         "data_uri": image_url
@@ -370,7 +363,8 @@ def user_profile(request):
             user.id_image = request.FILES['id_image']
 
         user.save()
-        return render(request, 'FrontEnd/profile.html', {'user': user})
+        wish_list = user.wishlist
+        return render(request, 'FrontEnd/profile.html', {'user': user, 'wish_list': wish_list, 'id': "profile-details"})
     else:
         # Retrieve the user id from the session
         value = request.session.get('_user_id')
@@ -567,7 +561,7 @@ def purchase_currency(request):
         crypto_choices = [{'id': crypto.id, 'name': crypto.name, 'price': str(crypto.current_price_cad)} for crypto in
                           CryptoCurrency.objects.all()]
         crypto_choices_json = json.dumps(crypto_choices, cls=DjangoJSONEncoder)
-
+        user = UserDetails.objects.get(pk=user_id)
         return render(request, 'FrontEnd/profile.html',
                       {'form': form, 'balance': user_wallet.balance, 'crypto_choices_json': crypto_choices_json,
-                       'id': "purchase-currency"})
+                       'id': "purchase-currency","user":user})

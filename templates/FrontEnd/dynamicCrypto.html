@@ -4,36 +4,81 @@
     <meta charset="UTF-8">
     <title>Individual coins</title>
     <link rel="stylesheet" href="../../static/css/dynamic.css">
+    <style>
+        .coin-price{
+            font-size: 40px;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+        .coin-percentage{
+            font-size: 30px;
+            margin-top: 5px;
+            font-weight: 200;
+        }
+        .stat{
+        padding: 20px;
+        padding-left: 0;
+        border-radius: 4px;
+        }
+        .trade-btn{
+            padding: 20px;
+            border-radius: 50px;
+            border: 2px;
+            padding-right: 40px;
+            margin-left: 30px;
+            background-color: #bdbfbf;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+        }
+
+        .trade-btn:hover{
+            background-color: #c6cccc;
+        }
+    </style>
 </head>
 <body>
 <h2 class="coin_title">
-        <img src="{{ coin.image }}" alt="{{ coin.symbol }}" width="40" height="40">&nbsp;{{ coin.name }} {{ coin.symbol }}
+        <img style="transform: translateY(20px)" src="{{ coin.image }}" alt="{{ coin.symbol }}" width="90" height="90">&nbsp;{{ coin.name }} <span style="text-transform: uppercase"> {{ coin.symbol }}</span>
+        <p class="coin-price">CAD {{ coin.current_price }}</p>
+        <p class="coin-percentage">CAD {{ coin.price_change_24h }}
+            {% if coin.price_change_percentage_24h > 0 %}
+           <span style="color: green">+ {{coin.price_change_percentage_24h}}%</span>
+        {% else %}
+           <span style="color: red">{{coin.price_change_percentage_24h}}%</span>
+         {% endif %}</p>
         </h2>
 <img src="{{ data_uri }}" alt="Price Chart">
+<br>
+<br>
+<button class="trade-btn"> <span style="margin-right: 100px">Trade {{ coin.name }} </span><span style="margin-right: auto">--></span></button>
 
-<button>Trade {{ coin.name }}</button>
-<div class="market-stats">
-    <h1 class="market_Header">Market</h1>
+<div style="max-width: 1000px;margin-left: 20px" class="market-stats">
+    <hr/>
+    <h1 style="font-size: 40px" class="market_Header">Market</h1>
     <div class="stats-container">
         <div class="stat">
             <h2>MARKET CAP</h2>
-            <p>USD${{ coin.market_cap }}</p>
+            <p>CAD${{ coin.market_cap }}</p>
         </div>
         <div class="stat">
             <h2>TOTAL VOLUME</h2>
-            <p>USD${{ coin.total_volume }}</p>
+            <p>CAD${{ coin.total_volume }}</p>
         </div>
         <div class="stat">
             <h2>CIRCULATING SUPPLY</h2>
-            <p>{{ coin.circulating_supply }}{{ coin.symbol }}</p>
+            <p>{{ coin.circulating_supply }} {{ coin.symbol|upper }}</p>
         </div>
         <div class="stat">
             <h2>TOTAL SUPPLY</h2>
-            <p>{{ coin.total_supply }}{{ coin.symbol }}</p>
+            <p>{{ coin.total_supply }} {{ coin.symbol|upper }}</p>
         </div>
         <div class="stat">
             <h2>ALL TIME HIGH</h2>
-            <p>USD${{ coin.ath_change_percentage }}</p>
+            <p>CAD${{ coin.ath }}</p>
         </div>
         <div class="stat">
             <h2>TYPICAL HOLD TIME</h2>
@@ -60,6 +105,7 @@
             <p>{{ coin.ath_date }}</p>
         </div>
     </div>
+    <hr/>
 </div>
 </body>
 </html>
