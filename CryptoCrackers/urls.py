@@ -28,5 +28,9 @@ urlpatterns = [
     path('userprofile/purchase_currency/', views.purchase_currency, name='purchase_currency'),
     # path('add_money/', views.add_money, name='add_money'),
     # path('purchase_currency/', views.purchase_currency, name='purchase_currency'),
+<<<<<<< HEAD
     ]
 
+=======
+    ]
+>>>>>>> 1faccb192e27c10bd0abab42dcb015ac11f43064
