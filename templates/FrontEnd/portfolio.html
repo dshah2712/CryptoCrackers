@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Portfolio</title>
+</head>
+<body>
+  <h2>My Portfolio</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Cryptocurrency</th>
+        <th>Quantity</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for coin, quantity in cryptocurrencies.items %}
+        <tr>
+          <td>{{ coin }}</td>
+          <td>{{ quantity }}</td>
+          <td>
+            <form method="post" action="{% url 'CryptoCrackers:sell_currency' %}">
+              {% csrf_token %}
+              <input type="hidden" name="coin" value="{{ coin }}">
+              <button type="submit">Sell</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</body>
+</html>

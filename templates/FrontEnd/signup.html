@@ -2,34 +2,38 @@
 <html>
 <head>
 	<title>Signup Page</title>
-	<link rel="stylesheet" href="../../static/css/style.css">
+	<link rel="stylesheet" href="../../static/css/stylesign.css">
 
 </head>
 <body>
-	<div class="container">
-		<h1>Create Account</h1>
-		<form action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-{#			<label for="imageDropdown">Select an Image:</label>#}
-{#    <select id="imageDropdown" name="imageDropdown">#}
-{#        <option value="image1"> <!-- You can set a unique value for each option -->#}
-{#            <img src="https://cdn.iconscout.com/icon/free/png-512/free-avatar-370-456322.png?f=webp&w=512" alt="Image 1">#}
-{#        </option>#}
-{#        <option value="image2">#}
-{#            <img src="https://cdn.iconscout.com/icon/free/png-512/free-avatar-370-456322.png?f=webp&w=512" alt="Image 2">#}
-{#        </option>#}
-{#        <!-- Add more options as needed -->#}
-{#    </select>#}
+    <div class="box-form">
+        <div class="left">
+            <div class="overlay">
+                <h1>Join Us</h1>
+                <br><br>
+                <p>Securely manage your account by signing up.</p>
+            </div>
+        </div>
 
-            <button type="submit">Register</button>
-		</form>
 
-        <div class="signup">
-			<p>Already have an account? <a href="http://localhost:8000/login">Login</a></p>
-		</div>
-		<div class="error">
-		</div>
+		<div class="right">
+		<h5>Sign UP</h5>
+		<p>Already have an account? <a href="{% url 'CryptoCrackers:login' %}">Sign In to your account</a></p>
+        <form action="" method="post">
+                    {% csrf_token %}
+
+        <div class="inputs">
+            {{ form }}
+        </div>
+
+        <div class="remember-me--forget-password">
+            <button type="submit">Sign Up</button>
+        </div>
+            </form>
+
+			<br><br>
 	</div>
+
+</div>
 </body>
 </html>

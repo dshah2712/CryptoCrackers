@@ -4,29 +4,6 @@
 <!--?{#<head>#}-->
 <!--?{#	<title>Login Page</title>#}-->
 <!--?{#	<link rel="stylesheet" href="../../static/css/style.css">#}-->
-<!--?{#</head>#}-->
-<!--?{#<body>#}-->
-<!--?{#	<div class="container">#}-->
-<!--?{#		<h1>Login</h1>#}-->
-<!--?{#		<form action="{% url 'CryptoCrackers:process_form' %}" method="post">#}-->
-<!--?{#            {% csrf_token %}#}-->
-<!--?{#			<input type="text" id="username" name="username" placeholder="Email" required>#}-->
-<!--?{#			<input type="password" id="password" name="password" placeholder="Password" required>#}-->
-<!--?{##}-->
-<!--?{#			<input type="submit" value="Log in" class="login-button ">#}-->
-<!--?{##}-->
-<!--?{#            <button><a href="{% provider_login_url "google" %}">Google</a></button>#}-->
-<!--?{#        #    <button><a href="https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?client_id=1068557462895-p1u30p6teintg16ivbcadc8npt5n9t9q.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Faccounts%2Fgoogle%2Flogin%2Fcallback%2F&scope=profile%20email&response_type=code&state=drbvD9lb1fwcoeru&service=lso&o2v=2&theme=glif&flowName=GeneralOAuthFlow ">Google</a></button>#}-->
-<!--?{##}-->
-<!--?{#		</form>#}-->
-<!--?{#        <div class="signup">#}-->
-<!--?{#			<p>Don't have an account? <a href="http://localhost:8000/signup">Sign up</a></p>#}-->
-<!--?{#		</div>#}-->
-<!--?{#		<div class="error">#}-->
-<!--?{#		</div>#}-->
-<!--?{#	</div>#}-->
-<!--?{#</body>#}-->
-<!--?{#</html>#}-->
 
 <!DOCTYPE html>
 <html>
@@ -34,22 +11,37 @@
 	<title>Login Page</title>
 	<link rel="stylesheet" href="../../static/css/style.css">
 </head>
-<body>
-	<div class="container">
-		<h1>Login</h1>
-		<form action="" method="post">
-			{% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Login</button>
-                        <button><a href="{% provider_login_url "google" %}">Google</a></button>
-                        <button><a href={% url 'CryptoCrackers:send_forgotpassword_mail' %}>ForgotPassword</a></button>
-{#            <button><a href="https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?client_id=1068557462895-p1u30p6teintg16ivbcadc8npt5n9t9q.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Faccounts%2Fgoogle%2Flogin%2Fcallback%2F&scope=profile%20email&response_type=code&state=drbvD9lb1fwcoeru&service=lso&o2v=2&theme=glif&flowName=GeneralOAuthFlow ">Google</a></button>#}
 
-		</form>
-        <div class="signup">
-			<p>Don't have an account? <a href="http://localhost:8000/signup">Sign up</a></p>
-		</div>
-		<div class="error">
+<div class="box-form">
+	<div class="left">
+		<div class="overlay">
+		<h1>Welcome Back</h1>
+		<p>Securely manage your cryptocurrencies and explore the world of blockchain technology.</p>
+		<span>
+			<p>login with social media</p>
+			<a href="{% provider_login_url "google" %}">Google</a>
+		</span>
 		</div>
 	</div>
-</body>
+
+
+		<div class="right">
+		<h5>Login</h5>
+		<p>Don't have an account? <a href="http://localhost:8000/signup">Creat Your Account</a> it takes less than a minute</p>
+            <form action="" method="post">
+        {% csrf_token %}
+                <div class="inputs">
+        {{ form.as_p }}
+                    </div>
+        <div class="remember-me--forget-password">
+            <button type="submit">Login</button>
+            <a href="{% url 'CryptoCrackers:send_forgotpassword_mail' %}">Forgot Password</a>
+        </div>
+
+            </form>
+
+
+			<br><br>
+	</div>
+
+</div>
