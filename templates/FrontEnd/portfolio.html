@@ -5,31 +5,34 @@
     <title>Portfolio</title>
 </head>
 <body>
-  <h2>My Portfolio</h2>
-  <table>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <button type="submit">Submit</button>
+</form>
+
+<table>
     <thead>
-      <tr>
-        <th>Cryptocurrency</th>
-        <th>Quantity</th>
-        <th>Action</th>
-      </tr>
+        <tr>
+            <th>Action</th>
+            <th>Coin</th>
+            <th>Quantity</th>
+            <th>Result</th>
+        </tr>
     </thead>
     <tbody>
-      {% for coin, quantity in cryptocurrencies.items %}
-        <tr>
-          <td>{{ coin }}</td>
-          <td>{{ quantity }}</td>
-          <td>
-            <form method="post" action="{% url 'CryptoCrackers:sell_currency' %}">
-              {% csrf_token %}
-              <input type="hidden" name="coin" value="{{ coin }}">
-              <button type="submit">Sell</button>
-            </form>
-          </td>
-        </tr>
-      {% endfor %}
+        {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.get_action_display }}</td>
+                <td>{{ transaction.coin }}</td>
+                <td>{{ transaction.quantity }}</td>
+                <td>{{ transaction.result }}</td>
+            </tr>
+        {% endfor %}
     </tbody>
-  </table>
+</table>
+
 
 </body>
 </html>

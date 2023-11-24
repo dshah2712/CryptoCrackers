@@ -20,6 +20,7 @@ class News(models.Model):
     title = models.CharField(max_length=100)
     image = models.ImageField(upload_to='static/news_images/')
     description = models.TextField()
+    
 class CryptoCurrency(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     symbol = models.CharField(max_length=10)
@@ -80,3 +81,19 @@ class Purchase(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s purchase Details"
+
+class portfolioTranscation(models.Model):
+    user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
+    action = models.CharField(max_length=4, choices=[('BUY', 'Buy'), ('SELL', 'Sell')])
+    coin = models.ForeignKey(CryptoCurrency, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    result = models.IntegerField()
+ 
+    def save(self, *args, **kwargs):
+        # Calculate result based on action, coin value, and quantity
+        if self.action == 'BUY':
+            self.result = self.coin.current_price * self.quantity
+        elif self.action == 'SELL':
+            self.result = -1 (self.coin.current_price * self.quantity)
+        super().save(*args, **kwargs)
+    

@@ -156,6 +156,37 @@
     text-align: center;
 }
 
+. {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+
+  #purchase-table, #transaction-table {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 150%;
+  }
+  
+  #purchase-table td, #purchase-table th, #transaction-table td, #transaction-table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #purchase-table tr:nth-child(even){background-color: #f2f2f2;}
+  #transaction-table tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #purchase-table tr:hover {background-color: #ddd;}
+  #transaction-table tr:hover {background-color: #ddd;}
+  
+  #purchase-table th, #transaction-table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #003366;
+    color: white;
+  }
 
 
     </style>
@@ -165,7 +196,7 @@
         window.addEventListener('load', function(event) {
             event.preventDefault();
 
-            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency", "transaction-history"];
+            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency", "transaction-history", "purchase-history"];
             var sectionId = "{{ id|escapejs }}";
             {#var sectionId = {{ id }}#}
 
@@ -187,7 +218,7 @@
         // Function to toggle the visibility of sections
 
         function accountSecurity() {
-            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency","sell", "transaction-history"];
+            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency","sell", "transaction-history", "purchase-history"];
 
 
             sections.forEach((index)=>{
@@ -325,7 +356,7 @@
             </div>
             <div id="transaction-history" style=" display: none;">
                 <h1>Transactions</h1>
-                <table border="1">
+                <table id="transaction-table">
                     <thead>
                         <tr>
                             <th>User</th>
@@ -346,6 +377,34 @@
                     </tbody>
                 </table>
                 
+            </div>
+            <div id="purchase-history" style="display: none">
+                <h1>Purchase History</h1>
+
+                <table id="purchase-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Crypto Currency</th>
+                            <th>Quantity</th>
+                            <th>Total Amount</th>
+                            <th>Timestamp</th>
+                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for history in history %}
+                        <tr>
+                            <td>{{ history.user.username }}</td>
+                            <td>{{ history.cryptocurrency }}</td>
+                            <td>{{ history.quantity }}</td>
+                            <td>{{ history.total_amount }}</td>
+                            <td>{{ history.timestamp }}</td>
+                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
             <div id="add-money" style=" display: none;">
                   <h1>Add money to Wallet</h1>
