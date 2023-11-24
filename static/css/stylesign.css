@@ -1,0 +1,137 @@
+body {
+    background-image: linear-gradient(135deg, #1b09b4 10%, #7df2f8 100%);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: "Open Sans", sans-serif;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+}
+
+.box-form {
+    margin: auto;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    box-shadow: 0 0 20px 6px #090b6f85;
+}
+
+@media (max-width: 980px) {
+    .box-form {
+        flex-flow: column-reverse;
+    }
+}
+
+.box-form .left {
+    flex: 1;
+    color: #FFFFFF;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url("../cryptoimg.jpg");
+    overflow: hidden;
+}
+
+.box-form .left .overlay {
+    padding: 30px;
+    width: 100%;
+    height: 100%;
+    background: #5961f9ad;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.box-form .left .overlay h1 {
+    font-size: 9vmax;
+    line-height: 1;
+    font-weight: 900;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.box-form .left .overlay span p {
+    margin-top: 30px;
+    font-weight: 900;
+}
+
+.box-form .left .overlay span a {
+    background: #3b5998;
+    color: #FFFFFF;
+    margin-top: 10px;
+    padding: 14px 50px;
+    border-radius: 100px;
+    display: inline-block;
+    box-shadow: 0 3px 6px 1px #042d4657;
+}
+
+.box-form .left .overlay span a:last-child {
+    background: #1dcaff;
+    margin-left: 30px;
+}
+
+.box-form .right {
+    flex: 1;
+    padding: 40px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.box-form .right h5 {
+    font-size: 2em;
+    line-height: 0;
+}
+
+.box-form .right p {
+    font-size: 14px;
+    color: #B0B3B9;
+}
+
+.box-form .right .inputs {
+    overflow: hidden;
+}
+
+.box-form .right label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.box-form .right input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    background-color: #f5f5f5; /* Background color for the textboxes */
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px; /* Add margin between input fields */
+}
+
+.box-form .right .remember-me--forget-password {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.box-form .right button {
+    color: #fff;
+    font-size: 16px;
+    padding: 12px 35px;
+    border-radius: 50px;
+    display: inline-block;
+    border: 0;
+    outline: 0;
+    box-shadow: 0px 4px 20px 0px #49c628a6;
+    background-image: linear-gradient(135deg, #70F570 10%, #49C628 100%);
+    cursor: pointer;
+    transition: background-image 0.3s ease;
+}
+
+.box-form .right button:hover {
+    background-image: linear-gradient(135deg, #49C628 10%, #70F570 100%);
+}
