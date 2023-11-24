@@ -605,3 +605,35 @@ def Sell(request):
         form = sellform(user_id)
     return render(request, 'FrontEnd/profile.html', {"user": user_id, 'form':form ,  'id': "sell"})
 
+def transaction_list(request):
+    user_id = request.session.get('_user_id')
+
+    # Check if the user ID is present in the session
+    if user_id:
+        # Retrieve the user based on the user ID
+        user = UserDetails.objects.get(pk=user_id)
+
+        # Filter transactions for the current user
+        transactions = Transaction.objects.filter(user=user)
+        return render(request, 'FrontEnd/transactionhistory.html', {'transactions': transactions})
+    else:
+        # Handle the case when the user ID is not present in the session (you can redirect to a login page or display an error message)
+        return render(request, 'FrontEnd/login.html')
+    
+def purchase_history_list(request):
+    user_id = request.session.get('_user_id')
+
+    # Check if the user ID is present in the session
+    if user_id:
+        # Retrieve the user based on the user ID
+        user = UserDetails.objects.get(pk=user_id)
+
+        # Filter transactions for the current user
+        history = Purchase.objects.filter(user=user)
+        return render(request, 'FrontEnd/purchaseHistory.html', {'history': history})
+    else:
+        # Handle the case when the user ID is not present in the session (you can redirect to a login page or display an error message)
+        return render(request, 'FrontEnd/login.html')
+
+    
+

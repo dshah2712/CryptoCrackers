@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Purchase History</title>
+</head>
+<body>
+
+<h2>Purchase History</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Crypto Currency</th>
+            <th>Quantity</th>
+            <th>Total Amount</th>
+            <th>Timestamp</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        {% for history in history %}
+        <tr>
+            <td>{{ history.user.username }}</td>
+            <td>{{ history.cryptocurrency }}</td>
+            <td>{{ history.quantity }}</td>
+            <td>{{ history.total_amount }}</td>
+            <td>{{ history.timestamp }}</td>
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

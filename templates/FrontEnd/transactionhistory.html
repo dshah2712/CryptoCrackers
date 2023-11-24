@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transaction List</title>
+</head>
+<body>
+
+<h2>Transaction List</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Amount</th>
+            <th>Timestamp</th>
+            <th>Transaction Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.user.username }}</td>
+            <td>{{ transaction.amount }}</td>
+            <td>{{ transaction.timestamp }}</td>
+            <td>{{ transaction.transaction_type }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

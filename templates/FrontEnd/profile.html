@@ -165,7 +165,7 @@
         window.addEventListener('load', function(event) {
             event.preventDefault();
 
-            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency"];
+            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency", "transaction-history"];
             var sectionId = "{{ id|escapejs }}";
             {#var sectionId = {{ id }}#}
 
@@ -187,7 +187,7 @@
         // Function to toggle the visibility of sections
 
         function accountSecurity() {
-            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency","sell"];
+            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency","sell", "transaction-history"];
 
 
             sections.forEach((index)=>{
@@ -228,6 +228,8 @@
                 <li><a href="{% url 'CryptoCrackers:add_money' %}" >Add Money to Wallet</a></li>
                 <li><a href="{% url 'CryptoCrackers:purchase_currency' %}" >Purchase Crypto Currency</a></li>
                 <li><a href="{% url 'CryptoCrackers:sell_crypto' %}" >Sell Crypto Currency</a></li>
+                <li><a href="{% url 'CryptoCrackers:transaction_list' %}" >Transaction History</a></li>
+                <li><a href="{% url 'CryptoCrackers:purchasehistory_list' %}" >Purchase History</a></li>
 
             </ul>
         </div>
@@ -320,6 +322,30 @@
                         </li>
                     {% endfor %}
                 </ul>
+            </div>
+            <div id="transaction-history" style=" display: none;">
+                <h1>Transactions</h1>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Timestamp</th>
+                            <th>Transaction Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.user.username }}</td>
+                            <td>{{ transaction.amount }}</td>
+                            <td>{{ transaction.timestamp }}</td>
+                            <td>{{ transaction.transaction_type }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
             </div>
             <div id="add-money" style=" display: none;">
                   <h1>Add money to Wallet</h1>
