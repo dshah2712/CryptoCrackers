@@ -1,7 +1,7 @@
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm,ChangePasswordForm
+from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm, ChangePasswordForm, sellform
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
@@ -19,6 +19,7 @@ import numpy as np
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -511,11 +512,6 @@ def purchase_currency(request):
     if request.method == 'POST':
         form = PurchaseForm(user_id, request.POST)
 
-        # user_details = UserDetails.objects.get(id=user_id)
-        # if not user_details.id_image:
-        #     messages.error(request, "Please upload a valid ID image before purchasing cryptocurrency.")
-        #     return JsonResponse({'success': False, 'error': 'ID image not uploaded'})
-
         if form.is_valid():
             cryptocurrency = form.cleaned_data['cryptocurrency']
             quantity = form.cleaned_data['quantity']
@@ -566,4 +562,46 @@ def purchase_currency(request):
         return render(request, 'FrontEnd/profile.html',
                       {'form': form, 'balance': user_wallet.balance, 'crypto_choices_json': crypto_choices_json,
                        'id': "purchase-currency","user":user})
+
+def Sell(request):
+    user_id = request.session.get('_user_id')
+    if not user_id:
+        # Redirect to login or handle the case where the user is not authenticated
+        return redirect('/login/')
+
+    user_wallet, created = Wallet.objects.get_or_create(user_id=user_id)
+
+    if request.method == 'POST':
+        form = sellform(user_id,request.POST)
+        cryptocurrency = request.POST['cryptocurrencies']
+        quantity = request.POST['sellquantity']
+        cryptmod=CryptoCurrency.objects.get(name=cryptocurrency)
+        total_amount = cryptmod.current_price_cad * Decimal(quantity)
+        user = UserDetails.objects.get(id=user_id)
+
+        # Get the current cryptocurrencies of the user
+        cryptocurrencies = user.cryptocurrencies
+        print(type(cryptocurrencies[cryptocurrency]))
+        #
+        #
+        if int(quantity) <= int(cryptocurrencies[cryptocurrency]) :
+            user_wallet.balance += total_amount
+            # print(user_wallet.balance)
+            cryptocurrencies[cryptocurrency]=int(cryptocurrencies[cryptocurrency])-int(quantity)
+            if int(cryptocurrencies[cryptocurrency]) <= 0:
+                del cryptocurrencies[cryptocurrency]
+
+            user.cryptocurrencies = cryptocurrencies
+
+            # print(user.cryptocurrencies)
+            user_wallet.save()
+            user.save()
+
+            return JsonResponse({'success': True, 'total_amount': total_amount})
+        else:
+            return JsonResponse({'success': False, 'error': 'Trying to sell more quantity then purchase coin has'})
+
+    else:
+        form = sellform(user_id)
+    return render(request, 'FrontEnd/profile.html', {"user": user_id, 'form':form ,  'id': "sell"})
 

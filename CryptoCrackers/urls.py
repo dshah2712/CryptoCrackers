@@ -21,9 +21,14 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     # path('home/', views.homePage, name='home'),
     path('add_to_wishlist/<str:coin_name>/', views.add_to_wishlist, name='add-to-wishlist'),
-    path('userprofile/remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
+    path('wishlist/remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
+    path('remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
     path('wishlist/', views.wishlist, name='wishlist'),
     path('landing/', views.landing, name='landing'),
-    path('userprofile/add_money/', views.add_money, name='add_money'),
+    path('userprofile/add_money', views.add_money, name='add_money'),
     path('userprofile/purchase_currency/', views.purchase_currency, name='purchase_currency'),
+    path('sell_crypto/', views.Sell, name='sell_crypto'),
+
+    # path('add_money/', views.add_money, name='add_money'),
+    # path('purchase_currency/', views.purchase_currency, name='purchase_currency'),
     ]

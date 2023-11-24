@@ -1,5 +1,6 @@
 from django import forms
 from .models import UserDetails, Wallet, CryptoCurrency, Purchase, Transaction
+import json
 
 
 class RegisterForm(forms.ModelForm):
@@ -52,6 +53,37 @@ def _init_(self, *args, **kwargs):
     self.fields['last_name'].required = True
     self.fields['email'].required = True
     self.fields['username'].required = True
+
+class JSONSelect(forms.Select):
+    def value_from_datadict(self, data, files, name):
+        value = data.get(name)
+        try:
+            return json.loads(value)
+        except (json.JSONDecodeError, TypeError):
+            return value
+
+
+class sellform(forms.ModelForm):
+    sellquantity = forms.IntegerField(required=True)
+
+    class Meta:
+        model = UserDetails
+        fields = ['cryptocurrencies']
+        widgets = {
+            'cryptocurrencies': forms.Select(attrs={'id': 'id_cryptocurrencies'}),
+        }
+
+    def __init__(self, user_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Get the user details for the specified user_id
+        user_details = UserDetails.objects.get(id=user_id)
+
+        choices = [(key, key) for key in user_details.cryptocurrencies.keys()]
+
+        self.fields['cryptocurrencies'].widget = forms.Select(choices=choices)
+
+        self.user_id = user_id
 
 class AddMoneyForm(forms.ModelForm):
     class Meta:

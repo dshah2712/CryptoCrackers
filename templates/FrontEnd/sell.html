@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <title>Sell Currency</title>
 </head>
 <body>
@@ -16,3 +18,32 @@
   </form>
 </body>
 </html>
+=======
+=======
+>>>>>>> Stashed changes
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Form</title>
+</head>
+<body>
+
+  <h2>Sell Form</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    <div>
+        <label for="{{ form.cryptocurrencies.id_for_label }}">Cryptocurrencies:</label>
+        {{ form.cryptocurrencies }}
+    </div>
+    <div>
+        <label for="{{ form.sellquantity.id_for_label }}">Sell Quantity:</label>
+        {{ form.sellquantity }}
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+
+</body>
+</html>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes

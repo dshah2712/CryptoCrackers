@@ -129,6 +129,32 @@
         .wishlist-icon img {
             width: 60px;
             height: 60px;}
+        .alert-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.alert-box .alert-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.alert-box .alert-body {
+    background-color: #fff;
+    padding: 20px;
+    text-align: center;
+}
 
 
 
@@ -161,7 +187,7 @@
         // Function to toggle the visibility of sections
 
         function accountSecurity() {
-            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency"];
+            var sections = ["profile-details", "account-security","wishlist","add-money","purchase-currency","sell"];
 
 
             sections.forEach((index)=>{
@@ -201,6 +227,8 @@
                 <li><a href="{% url 'CryptoCrackers:wishlist' %}" >Wishlist</a></li>
                 <li><a href="{% url 'CryptoCrackers:add_money' %}" >Add Money to Wallet</a></li>
                 <li><a href="{% url 'CryptoCrackers:purchase_currency' %}" >Purchase Crypto Currency</a></li>
+                <li><a href="{% url 'CryptoCrackers:sell_crypto' %}" >Sell Crypto Currency</a></li>
+
             </ul>
         </div>
         <div class="content">
@@ -306,7 +334,6 @@
             <div id="purchase-currency" style="display: none;">
                   <h1>Purchase Crypto Currency</h1>
                   <p>Available Balance: ${{ balance }}</p>
-
                 {% if user.id_image%}
                     <form method="post" id="purchaseForm">
                         {% csrf_token %}
@@ -319,6 +346,19 @@
                     <p style="color: red;">Please upload a valid ID image before purchasing cryptocurrency.</p>
                 {% endif %}
             </div>
+            <div id="sell" style="display: none;">
+                      <h1>Sell Crypto Currency</h1>
+{#                      <p>Available Balance: ${{ balance }}</p>#}
+                    <form method="post" id="sell">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+
+
+                        <button class="save-button" type="submit">Sell</button>
+
+                    </form>
+                </div>
+
 
             <script>
 
@@ -383,6 +423,7 @@
                         });
                   });
 
+
                   document.getElementById("addmoney").addEventListener("submit", function (event) {
                       event.preventDefault(); // Prevent the default form submission
 
@@ -413,6 +454,41 @@
                           // Handle error if needed
                         });
                   });
+               document.getElementById("sell").addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Use AJAX to submit the form data to your Django view
+    const formData = new FormData(document.getElementById("sell"));
+
+    try {
+        const response = await fetch("{% url 'CryptoCrackers:sell_crypto' %}", {
+            method: "POST",
+            body: formData,
+        });
+
+        // Check if the response status is OK (status code 200)
+        if (!response.ok) {
+            // If the response status is not OK, throw an error
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Convert the JSON object to a string
+        const jsonString = JSON.stringify(data);
+
+        // Display the JSON string in an alert box
+        alert(jsonString);
+
+    } catch (error) {
+        console.error('Error:', error);
+        // Handle error if needed
+        alert("An error occurred while processing your request.");
+    }
+});
+
+
+
             </script>
 
      </div>
