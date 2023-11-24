@@ -218,13 +218,13 @@
             <div id="profile-details" style="display: block;">
                 <h1>Profile Details</h1>
                 <h1>{{ UserDetails.username }}</h1>
-                <form action="" method="post">
+                <form action="" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-{#                    <div class="form-group">#}
-{#                        <label for="avatar">Choose Avatar:</label>#}
-{##}
-{#                        <input type="text" id="avatar" name="avatar">#}
-{#                    </div>#}
+                    <div class="form-group">
+                        <label for="avatar">Choose Avatar:</label>
+
+                        <input type="text" id="avatar" name="avatar">
+                    </div>
                     <div class="form-group">
                         <label for="username">Username:</label>
                         <input type="text" value="{{ user.username }}" id="username" name="username">
@@ -243,7 +243,7 @@
                     </div>
                     <div class="form-group">
                         <label for="id_image">Upload ID Image:</label>
-                        <input type="file" id="id_image" name="id_image" accept="image/*">
+                        <input type="file" value="{{ user.id_image }}" id="id_image" name="id_image" accept="image/*">
                     </div>
                     <button class="save-button" type="submit">Save</button>
                 </form>
@@ -306,28 +306,18 @@
             <div id="purchase-currency" style="display: none;">
                   <h1>Purchase Crypto Currency</h1>
                   <p>Available Balance: ${{ balance }}</p>
-{#                {% if messages %}#}
-{#                    <ul class="messages">#}
-{#                        {% for message in messages %}#}
-{#                            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>#}
-{#                        {% endfor %}#}
-{#                    </ul>#}
-{#                {% endif %}#}
-                <form method="post" id="purchaseForm">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button class="save-button" type="button" onclick="calculateTotal()">Calculate Total</button>
-                    <p>Total Amount: $<span id="totalAmount">0.00</span></p>
-{#                    <button class="save-button" type="submit">Purchase</button>#}
-{#                    {% if user.id_image %}#}
 
-                    <button class="save-button" type="submit">Purchase</button>
-{#                    {% else %}#}
-{#                        <button class="save-button" type="button" disabled>Purchase</button>#}
-{#                        <p style="color: red;">Please upload a valid ID image before purchasing cryptocurrency.</p>#}
-{##}
-{#                    {% endif %}#}
-                </form>
+                {% if user.id_image%}
+                    <form method="post" id="purchaseForm">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button class="save-button" type="button" onclick="calculateTotal()">Calculate Total</button>
+                        <p>Total Amount: $<span id="totalAmount">0.00</span></p>
+                        <button class="save-button" type="submit">Purchase</button>
+                    </form>
+                {% else %}
+                    <p style="color: red;">Please upload a valid ID image before purchasing cryptocurrency.</p>
+                {% endif %}
             </div>
 
             <script>
