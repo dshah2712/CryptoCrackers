@@ -354,9 +354,11 @@ def dynamic_Crypto(request, coin_name):
     # Construct the image src data URI
     image_url = f"data:image/png;base64,{image_base64}"
     coin.current_price = "{:,.2f}".format(coin.current_price)
+    user_id = request.session.get('_user_id')
     context = {
         "coin": coin,
-        "data_uri": image_url
+        "data_uri": image_url,
+        "user_id": user_id
     }
 
     return render(request, 'FrontEnd/dynamicCrypto.html', context)
@@ -674,87 +676,91 @@ def portfolio(request):
     
     user = UserDetails.objects.get(id=user_id)
     cryptocurrencies_dict = user.cryptocurrencies
-    crypto_currencies = CryptoCurrency.objects.all()
 
-    total_amount = 0
+    if cryptocurrencies_dict == {}:
+        return HttpResponseRedirect(reverse("CryptoCrackers:purchase_currency"))
+    else:
+        crypto_currencies = CryptoCurrency.objects.all()
 
-    data = []
+        total_amount = 0
 
-    for crypto_currency in crypto_currencies:
-        current_price = crypto_currency.current_price
-        name = crypto_currency.name
+        data = []
 
-        # Check if the cryptocurrency is in the user's portfolio
-        if name in cryptocurrencies_dict:
-            quantity = cryptocurrencies_dict[name]
-            value = current_price * quantity
-            total_amount += value
+        for crypto_currency in crypto_currencies:
+            current_price = crypto_currency.current_price
+            name = crypto_currency.name
 
-            # Append the data to the list
-            data.append({'name': name, 'current_price': current_price, 'quantity': quantity, 'value': value})
+            # Check if the cryptocurrency is in the user's portfolio
+            if name in cryptocurrencies_dict:
+                quantity = cryptocurrencies_dict[name]
+                value = current_price * quantity
+                total_amount += value
 
-    highest_value_assert = max(data, key=lambda x: x['current_price'])
-    top_10_cryptos = CryptoCurrency.objects.order_by('-current_price')[:10]
+                # Append the data to the list
+                data.append({'name': name, 'current_price': current_price, 'quantity': quantity, 'value': value})
 
-    # Generate the bar chart
-    crypto_names = [crypto.name for crypto in top_10_cryptos]
-    crypto_prices = [float(crypto.current_price) for crypto in top_10_cryptos]
+        highest_value_assert = max(data, key=lambda x: x['current_price'])
+        top_10_cryptos = CryptoCurrency.objects.order_by('-current_price')[:10]
 
-    plt.figure(figsize=(10, 6))  # Adjust the figure size as needed
+        # Generate the bar chart
+        crypto_names = [crypto.name for crypto in top_10_cryptos]
+        crypto_prices = [float(crypto.current_price) for crypto in top_10_cryptos]
 
-    plt.bar(crypto_names, crypto_prices)
-    plt.xlabel('Cryptocurrency')
-    plt.ylabel('Price')
-    plt.title('Top 10 Cryptocurrencies')
+        plt.figure(figsize=(10, 6))  # Adjust the figure size as needed
 
-    # Save the plot to a BytesIO object
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
+        plt.bar(crypto_names, crypto_prices)
+        plt.xlabel('Cryptocurrency')
+        plt.ylabel('Price')
+        plt.title('Top 10 Cryptocurrencies')
 
-    # Encode the BytesIO object as a base64 string
-    chart_image_bar = base64.b64encode(buffer.read()).decode('utf-8')
+        # Save the plot to a BytesIO object
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
 
-    plt.close() 
+        # Encode the BytesIO object as a base64 string
+        chart_image_bar = base64.b64encode(buffer.read()).decode('utf-8')
 
-    # Save the plot to a BytesIO object
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
+        plt.close()
 
-    # Encode the BytesIO object as a base64 string
-    chart_image = base64.b64encode(buffer.read()).decode('utf-8')
+        # Save the plot to a BytesIO object
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
 
-    # Generate Pie Chart
-    labels = [crypto['name'] for crypto in data]
-    sizes = [crypto['value'] for crypto in data]
+        # Encode the BytesIO object as a base64 string
+        chart_image = base64.b64encode(buffer.read()).decode('utf-8')
 
-    fig, ax = plt.subplots()
-    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-    ax.axis('equal')  # Equal aspect ratio ensures that the pie is drawn as a circle.
+        # Generate Pie Chart
+        labels = [crypto['name'] for crypto in data]
+        sizes = [crypto['value'] for crypto in data]
 
-    # Save the plot to a BytesIO object
-    chart_image = io.BytesIO()
-    plt.savefig(chart_image, format='png')
-    chart_image.seek(0)
+        fig, ax = plt.subplots()
+        ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+        ax.axis('equal')  # Equal aspect ratio ensures that the pie is drawn as a circle.
 
-    # Encode the image to base64
-    chart_image_base64 = base64.b64encode(chart_image.read()).decode('utf-8')
+        # Save the plot to a BytesIO object
+        chart_image = io.BytesIO()
+        plt.savefig(chart_image, format='png')
+        chart_image.seek(0)
 
-    plt.close()
+        # Encode the image to base64
+        chart_image_base64 = base64.b64encode(chart_image.read()).decode('utf-8')
 
-    context = {
-        'crypto_data': data,
-        'highest_value_assert': highest_value_assert,
-        'total_amount': total_amount,
-        'chart_image_base64': chart_image_base64,
-        'top_10_cryptos': top_10_cryptos, 
-        'chart_image': chart_image,
-        'chart_image_bar': chart_image_bar
-    }
-    print(max(data, key=lambda x: x['current_price']), "data")
+        plt.close()
 
-    return render(request, 'FrontEnd/portfolio.html', context)
+        context = {
+            'crypto_data': data,
+            'highest_value_assert': highest_value_assert,
+            'total_amount': total_amount,
+            'chart_image_base64': chart_image_base64,
+            'top_10_cryptos': top_10_cryptos,
+            'chart_image': chart_image,
+            'chart_image_bar': chart_image_bar
+        }
+        print(max(data, key=lambda x: x['current_price']), "data")
+
+        return render(request, 'FrontEnd/portfolio.html', context)
 
 
 
@@ -788,27 +794,3 @@ def purchase_history_list(request):
         # Handle the case when the user ID is not present in the session (you can redirect to a login page or display an error message)
         return render(request, 'FrontEnd/login.html')
     
-# @login_required  # Add the login_required decorator to ensure the user is authenticated
-# def transaction_view(request):
-#     if request.method == 'POST':
-#         form = PortfolioTransactionForm(request.POST)
-#         if form.is_valid():
-#             transaction = form.save(commit=False)
-            
-#             # Ensure the user is an instance of UserDetails
-#             if isinstance(request.user, UserDetails):
-#                 transaction.user = request.user
-#                 if transaction.action == 'BUY':
-#                     transaction.result = transaction.coin.current_price * transaction.quantity
-#                 elif transaction.action == 'SELL':
-#                     transaction.result = -1 * transaction.coin.current_price * transaction.quantity
-#                 transaction.save()
-#                 return redirect('portfolio')  # Redirect to the transaction list page
-#             else:
-#                 # Handle the case where the user is not an instance of UserDetails
-#                 # You may want to redirect to a login page or handle it in a way that makes sense for your application.
-#                 return HttpResponse('Invalid user')
-#     else:
-#         form = PortfolioTransactionForm()
-
-#     return render(request, 'FrontEnd/portfolio.html', {'form': form})

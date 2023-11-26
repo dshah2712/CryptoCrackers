@@ -35,12 +35,21 @@
 
         }
 
+
         .trade-btn:hover{
             background-color: #c6cccc;
+        }
+        .login-text{
+            color: black;
+            margin-left: 40px;
+            font-size: 20px;
+
         }
     </style>
 </head>
 <body>
+
+
 <h2 class="coin_title">
         <img style="transform: translateY(20px)" src="{{ coin.image }}" alt="{{ coin.symbol }}" width="90" height="90">&nbsp;{{ coin.name }} <span style="text-transform: uppercase"> {{ coin.symbol }}</span>
         <p class="coin-price">CAD {{ coin.current_price }}</p>
@@ -54,7 +63,16 @@
 <img src="{{ data_uri }}" alt="Price Chart">
 <br>
 <br>
-<button class="trade-btn"> <span style="margin-right: 100px">Trade {{ coin.name }} </span><span style="margin-right: auto">--></span></button>
+
+{% if user_id == None %}
+    <p class="login-text" >Please Login first <a href="{% url "CryptoCrackers:login" %}">login</a></p>
+    <button class="trade-btn"> <span style="margin-right: 100px">Trade {{ coin.name }} </span><span style="margin-right: auto">--></span></button>
+{% else %}
+    <button class="trade-btn"><a style="color: black;text-decoration: none" href="{% url "CryptoCrackers:purchase_currency" %}"> <span style="margin-right: 100px">Trade {{ coin.name }} </span><span style="margin-right: auto">--></span></a></button>
+
+
+{% endif %}
+
 
 <div style="max-width: 1000px;margin-left: 20px" class="market-stats">
     <hr/>

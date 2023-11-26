@@ -349,7 +349,8 @@ ol, li {
   <div class="card-content">
       <ol>
       {% with break_at_index=4 %}
-  {% for data in coins|slice:"3:" %}
+{#  {% for data in coins|slice:"3:" %}#}
+  {% for data in coins|dictsortreversed:"price_change_percentage_24h" %}
     {% if forloop.counter < break_at_index %}
       <li style="display: flex">
             <p class="currency-rank">{{ forloop.counter }}</p>
@@ -386,7 +387,8 @@ ol, li {
   <div class="card-content">
       <ol>
       {% with break_at_index=4 %}
-  {% for data in coins|slice:"6:" %}
+{#  {% for data in coins|slice:"6:" %}#}
+   {% for data in coins|dictsort:"price_change_percentage_24h" %}
     {% if forloop.counter < break_at_index %}
       <li style="display: flex">
             <p class="currency-rank">{{ forloop.counter }}</p>
