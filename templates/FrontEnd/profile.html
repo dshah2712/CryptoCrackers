@@ -212,7 +212,6 @@
 
               // Use the |escapejs filter to escape special characters
             {#console.log("User:", username);#}
-            console.log("Window is ready",username);
 
         });
         // Function to toggle the visibility of sections
@@ -254,7 +253,7 @@
         <div class="sidebar">
             <ul>
                 <li><a href="{% url 'CryptoCrackers:profile' %}" >Profile Details</a></li>
-                <li><a onclick="accountSecurity()" >Account Security</a></li>
+                <li><a  href="{% url 'CryptoCrackers:acc_sec' %}" >Account Security</a></li>
                 <li><a href="{% url 'CryptoCrackers:wishlist' %}" >Wishlist</a></li>
                 <li><a href="{% url 'CryptoCrackers:add_money' %}" >Add Money to Wallet</a></li>
                 <li><a href="{% url 'CryptoCrackers:purchase_currency' %}" >Purchase Crypto Currency</a></li>
@@ -320,22 +319,18 @@
 
             <div id="account-security" style="display: none;">
                 <h1>Account Security</h1>
-                <form action="accountsecurity/" method="post">
+                <form action="" method="post">
                     {% csrf_token %}
-                    <div class="frm-group">
-                        <label for="current-password">Current Password:</label>
-                        <input type="password" id="current-password" name="current-password">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-password">New Password:</label>
-                        <input type="password" id="new-password" name="new-password">
-                    </div>
-                    <div class="form-group">
-                        <label for="confirm-password">Confirm New Password:</label>
-                        <input type="password" id="confirm-password" name="confirm-password">
-                    </div>
-                    <button class="save-button" type="submit">Change Password</button>
-                    <p>{{ error }}</p>
+                    {% if not google %}
+                        {{ form.as_p }}
+                        <button class="save-button" type="submit">Change Password</button>
+                    {% else %}
+                        <p>You cant change password since you logged in using google</p>
+                    {% endif %}
+                    <p style="color: green">{{ message }}</p>
+                    <p style="color: red">{{ err_message }}</p>
+
+{#                    <p>{{ error }}</p>#}
                 </form>
 
 
@@ -439,23 +434,19 @@
                     <p style="color: red;">Please upload a valid ID image before purchasing cryptocurrency.</p>
                 {% endif %}
             </div>
+
             <div id="sell" style="display: none;">
-                      <h1>Sell Crypto Currency</h1>
+                <h1>Sell Crypto Currency</h1>
                 {% if user.id_image%}
-                    <form method="post" id="sell">
+                    <form method="post" id="sell-form">
                         {% csrf_token %}
                         {{ form.as_p }}
-
-
                         <button class="save-button" type="submit">Sell</button>
-
                     </form>
                 {% else %}
                     <p style="color: red;">Please upload a valid ID image before purchasing cryptocurrency.</p>
                 {% endif %}
-
-                </div>
-
+            </div>
 
             <script>
 
@@ -551,41 +542,33 @@
                           // Handle error if needed
                         });
                   });
-               document.getElementById("sell").addEventListener("submit", async function (event) {
-    event.preventDefault(); // Prevent the default form submission
+                document.getElementById("sell-form").addEventListener("submit",  function (event) {
+                    event.preventDefault();
 
-    // Use AJAX to submit the form data to your Django view
-    const formData = new FormData(document.getElementById("sell"));
+                    // Use AJAX to submit the form data to your Django view
+                    const formData = new FormData(document.getElementById("sell-form"));
 
-    try {
-        const response = await fetch("{% url 'CryptoCrackers:sell_crypto' %}", {
-            method: "POST",
-            body: formData,
-        });
+                        fetch("{% url 'CryptoCrackers:sell_crypto' %}", {
+                            method: "POST",
+                            body: formData,
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Display the message in a popup
+                            if (data.success) {
+                                alert("Sell successful.");
+                                // Optionally, reset the form
+                                document.getElementById("sell-form").reset();
+                            } else {
+                                alert("Trying to sell more quantity of coin compared to what you have");
+                                document.getElementById("sell-form").reset();
 
-        // Check if the response status is OK (status code 200)
-        if (!response.ok) {
-            // If the response status is not OK, throw an error
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        // Convert the JSON object to a string
-        const jsonString = JSON.stringify(data);
-
-        // Display the JSON string in an alert box
-        alert(jsonString);
-
-    } catch (error) {
-        console.error('Error:', error);
-        // Handle error if needed
-        alert("An error occurred while processing your request.");
-    }
-});
-
-
-
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
             </script>
 
      </div>

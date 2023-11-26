@@ -24,6 +24,10 @@ class LoginForm(forms.Form):
     username = forms.CharField(required=True)
     password = forms.CharField(widget=forms.PasswordInput(), required=True)
 
+class AccountSecurity(forms.Form):
+    new_password = forms.CharField(widget=forms.PasswordInput(), required=True)
+    confirm_password = forms.CharField(widget=forms.PasswordInput(), required=True)
+
 
 class ChangePasswordForm(forms.Form):
     username = forms.CharField(required=True)
@@ -54,34 +58,24 @@ def _init_(self, *args, **kwargs):
     self.fields['email'].required = True
     self.fields['username'].required = True
 
-class JSONSelect(forms.Select):
-    def value_from_datadict(self, data, files, name):
-        value = data.get(name)
-        try:
-            return json.loads(value)
-        except (json.JSONDecodeError, TypeError):
-            return value
 
+class sellform(forms.Form):
 
-class sellform(forms.ModelForm):
-    sellquantity = forms.IntegerField(required=True)
-
-    class Meta:
-        model = UserDetails
-        fields = ['cryptocurrencies']
-        widgets = {
-            'cryptocurrencies': forms.Select(attrs={'id': 'id_cryptocurrencies'}),
-        }
+    cryptocurrencies = forms.ChoiceField(choices=[])
+    sell_quantity = forms.IntegerField(required=True)
 
     def __init__(self, user_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Get the user details for the specified user_id
+        # Check which user we need the keys
         user_details = UserDetails.objects.get(id=user_id)
 
-        choices = [(key, key) for key in user_details.cryptocurrencies.keys()]
+        # Take data for that user
+        crypto_dict = user_details.cryptocurrencies
 
-        self.fields['cryptocurrencies'].widget = forms.Select(choices=choices)
+        choices = [(key, key) for key in crypto_dict.keys()]
+
+        self.fields['cryptocurrencies'].choices = choices
 
         self.user_id = user_id
 

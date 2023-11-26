@@ -17,7 +17,7 @@ urlpatterns = [
     path('account/',include('allauth.urls')),
     path('coins/<str:coin_name>/', views.dynamic_Crypto, name='dynamic_crypto'),
     path('userprofile/', views.user_profile, name='profile'),
-    path('userprofile/accountsecurity/', views.passwd_change, name='change password'),
+    path('userprofile/accountsecurity/', views.acc_sec, name='acc_sec'),
     path('userprofile/delete_account/', views.delete_account, name='delete_account'),
     path('logout/', views.user_logout, name='logout'),
     # path('home/', views.homePage, name='home'),

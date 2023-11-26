@@ -4,8 +4,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 import matplotlib.pyplot as plt
 import io
 import base64
+
+from django.views.decorators.csrf import csrf_protect
+
 import fetch_store_api
-from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm, ChangePasswordForm, UserProfileForm, sellform
+from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm, ChangePasswordForm, UserProfileForm, sellform, AccountSecurity
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
@@ -420,24 +423,31 @@ def user_profile(request):
 
 
 
-
-def passwd_change(request):
+def acc_sec(request):
     value = request.session.get('_user_id')
     user = UserDetails.objects.get(id=value)
+    if request.method == 'POST':
+        form=AccountSecurity(request.POST)
+        if form.is_valid():
+            password=form.cleaned_data['new_password']
+            confirm = form.cleaned_data['confirm_password']
+            google=False
+            if password == confirm:
+                user.password = make_password(password)
+                user.save()
+                return render(request, 'FrontEnd/profile.html',
+                              {'form': form, 'id': "account-security", 'user': user, 'google': google,'message':'Password changed Successfully'})
 
-    currentPassword = request.POST['current-password']
-    if check_password(currentPassword, user.password):
-        if request.POST['new-password'] == request.POST['confirm-password']:
-            user.password = make_password(request.POST['new-password'])
-            user.save()
-            messages.success(request, "Password changed successfully.")
-            return redirect('/userprofile')
-        else:
-            messages.error(request, "New password and confirm password do not match.")
-            return redirect('/userprofile')
+            else:
+                return render(request, 'FrontEnd/profile.html',
+                              {'form': form, 'id': "account-security", 'user': user, 'google': google,'err_message':'Password and Confirm password do not match'})
     else:
-        messages.error(request, "Current password is incorrect")
-        return redirect('/userprofile')
+        form = AccountSecurity()
+        if not user.password :
+            google=True
+        else:
+            google=False
+    return render(request, 'FrontEnd/profile.html', {'form': form, 'id': "account-security",'user': user,'google':google})
 
 
 def delete_account(request):
@@ -606,50 +616,57 @@ def purchase_currency(request):
                       {'form': form, 'balance': user_wallet.balance, 'crypto_choices_json': crypto_choices_json,
                        'id': "purchase-currency","user":user})
 
+@csrf_protect
 def Sell(request):
     user_id = request.session.get('_user_id')
     if not user_id:
-        # Redirect to login or handle the case where the user is not authenticated
         return redirect('/login/')
 
     user_wallet, created = Wallet.objects.get_or_create(user_id=user_id)
 
     if request.method == 'POST':
         form = sellform(user_id,request.POST)
-        cryptocurrency = request.POST['cryptocurrencies']
-        quantity = request.POST['sellquantity']
-        cryptmod=CryptoCurrency.objects.get(name=cryptocurrency)
-        total_amount = cryptmod.current_price_cad * Decimal(quantity)
-        user = UserDetails.objects.get(id=user_id)
+        if form.is_valid():
+            cryptocurrency = request.POST['cryptocurrencies']
+            quantity = request.POST['sell_quantity']
+            cryptmod=CryptoCurrency.objects.get(name=cryptocurrency)
+            total_amount = cryptmod.current_price_cad * Decimal(quantity)
+            user = UserDetails.objects.get(id=user_id)
 
-        # Get the current cryptocurrencies of the user
-        cryptocurrencies = user.cryptocurrencies
-        print(type(cryptocurrencies[cryptocurrency]))
-        #
-        #
-        if int(quantity) <= int(cryptocurrencies[cryptocurrency]) :
-            user_wallet.balance += total_amount
-            # print(user_wallet.balance)
-            cryptocurrencies[cryptocurrency]=int(cryptocurrencies[cryptocurrency])-int(quantity)
-            if int(cryptocurrencies[cryptocurrency]) <= 0:
-                del cryptocurrencies[cryptocurrency]
+            # Get the current cryptocurrencies of the user
+            cryptocurrencies = user.cryptocurrencies
+            print(type(cryptocurrencies[cryptocurrency]))
+            #
+            #
+            if int(quantity) <= int(cryptocurrencies[cryptocurrency]) :
+                user_wallet.balance += total_amount
+                # print(user_wallet.balance)
+                cryptocurrencies[cryptocurrency]=int(cryptocurrencies[cryptocurrency])-int(quantity)
+                if int(cryptocurrencies[cryptocurrency]) <= 0:
+                    del cryptocurrencies[cryptocurrency]
 
-            user.cryptocurrencies = cryptocurrencies
+                user.cryptocurrencies = cryptocurrencies
 
-            # print(user.cryptocurrencies)
-            user_wallet.save()
-            user.save()
+                # print(user.cryptocurrencies)
+                user_wallet.save()
+                user.save()
+                # return render(request, 'FrontEnd/profile.html', {"user": user, 'form': form, 'id': "sell", 'success_message': 'Sell has been made successfully and money added!'})
 
-            return JsonResponse({'success': True, 'total_amount': total_amount})
+                return JsonResponse({'success': True})
+            else:    # return JsonResponse({'success': False, 'error': 'Trying to sell more quantity then purchase coin has'})
+                return JsonResponse({'success': False})
+
+                # return render(request, 'FrontEnd/profile.html', {"user": user, 'form': form, 'id': "sell", 'error_message': 'Trying to sell more quantity than purchase coin has'})
         else:
-            return JsonResponse({'success': False, 'error': 'Trying to sell more quantity then purchase coin has'})
-
+            return redirect('/')
     else:
         form = sellform(user_id)
         user = UserDetails.objects.get(pk=user_id)
+        crypto_choices = [{'id': crypto.id, 'name': crypto.name, 'price': str(crypto.current_price_cad)} for crypto in
+                          CryptoCurrency.objects.all()]
+        crypto_choices_json = json.dumps(crypto_choices, cls=DjangoJSONEncoder)
 
-    return render(request, 'FrontEnd/profile.html', {"user": user, 'form':form ,  'id': "sell"})
-
+        return render(request, 'FrontEnd/profile.html', {'crypto_choices_json': crypto_choices_json,"user": user, 'form':form ,  'id': "sell"})
 def portfolio(request):
     user_id = request.session.get('_user_id')
     if not user_id:
