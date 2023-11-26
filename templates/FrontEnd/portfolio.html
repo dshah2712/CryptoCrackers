@@ -9,6 +9,16 @@
 
 {% if crypto_data %}
     <div>
+        <img src="data:image/png;base64,{{ chart_image_bar }}" alt="Top 10 Cryptocurrencies Chart" style="width: 150%; max-width: 600px; display: block; margin: auto;">
+
+        <!-- Display the list of top cryptocurrencies -->
+        <ul>
+            {% for crypto in top_10_cryptos %}
+                <li>{{ crypto.name }} - {{ crypto.current_price }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
         <img src="data:image/png;base64,{{ chart_image_base64 }}" alt="Pie Chart">
     </div>
     <p>Total Amount: ${{ total_amount }}</p>

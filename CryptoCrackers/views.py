@@ -644,6 +644,37 @@ def portfolio(request):
             # Append the data to the list
             data.append({'name': name, 'current_price': current_price, 'quantity': quantity, 'value': value})
 
+    top_10_cryptos = CryptoCurrency.objects.order_by('-current_price')[:10]
+
+    # Generate the bar chart
+    crypto_names = [crypto.name for crypto in top_10_cryptos]
+    crypto_prices = [float(crypto.current_price) for crypto in top_10_cryptos]
+
+    plt.figure(figsize=(10, 6))  # Adjust the figure size as needed
+
+    plt.bar(crypto_names, crypto_prices)
+    plt.xlabel('Cryptocurrency')
+    plt.ylabel('Price')
+    plt.title('Top 10 Cryptocurrencies')
+
+    # Save the plot to a BytesIO object
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    # Encode the BytesIO object as a base64 string
+    chart_image_bar = base64.b64encode(buffer.read()).decode('utf-8')
+
+    plt.close() 
+
+    # Save the plot to a BytesIO object
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    # Encode the BytesIO object as a base64 string
+    chart_image = base64.b64encode(buffer.read()).decode('utf-8')
+
     # Generate Pie Chart
     labels = [crypto['name'] for crypto in data]
     sizes = [crypto['value'] for crypto in data]
@@ -666,9 +697,14 @@ def portfolio(request):
         'crypto_data': data,
         'total_amount': total_amount,
         'chart_image_base64': chart_image_base64,
+        'top_10_cryptos': top_10_cryptos, 
+        'chart_image': chart_image,
+        'chart_image_bar': chart_image_bar
     }
 
     return render(request, 'FrontEnd/portfolio.html', context)
+
+
 
 def transaction_list(request):
     user_id = request.session.get('_user_id')
