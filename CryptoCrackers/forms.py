@@ -39,11 +39,13 @@ class ChangePasswordForm(forms.Form):
     )
     password = forms.CharField(
         label="Password",
-        widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password', 'autocomplete': 'new-password'})
+        widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password', 'autocomplete': 'new-password'}),
+        max_length=20
+
     )
     confirm_password = forms.CharField(
         label="Confirm Password",
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password again','autocomplete': 'new-password'}),
     )
 
 
