@@ -1,6 +1,8 @@
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, redirect, get_object_or_404
+
+import fetch_store_api
 from .forms import LoginForm, RegisterForm,PortfolioTransactionForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm, ChangePasswordForm, sellform
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
@@ -25,7 +27,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.conf import settings
+from fetch_store_api import fetch_and_store_crypto_data
+
 def index(request):
+    # fetch_and_store_crypto_data()
+
     news = News.objects.all()
     a  = False
     value = request.session.get('_user_id')
@@ -360,6 +366,8 @@ def user_profile(request):
         user.first_name = request.POST['firstname']
         user.username = request.POST['username']
         user.last_name = request.POST['lastname']
+        if 'id_image' in request.FILES:
+            user.id_image = request.FILES['id_image']
         # if len(request.FILES) != 0:
         #     user.id_image = request.FILES['id_image']
 
@@ -487,6 +495,7 @@ def add_money(request):
                 amount=amount,
                 transaction_type='deposit',
             )
+            # messages.success(request, "Money added successfully.")
 
             return JsonResponse({'success': True})
 
@@ -603,7 +612,9 @@ def Sell(request):
 
     else:
         form = sellform(user_id)
-    return render(request, 'FrontEnd/profile.html', {"user": user_id, 'form':form ,  'id': "sell"})
+        user = UserDetails.objects.get(pk=user_id)
+
+    return render(request, 'FrontEnd/profile.html', {"user": user, 'form':form ,  'id': "sell"})
 
 def transaction_list(request):
     user_id = request.session.get('_user_id')

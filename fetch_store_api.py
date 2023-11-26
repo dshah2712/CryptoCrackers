@@ -2,7 +2,6 @@
 import os
 import django
 
-# Set the DJANGO_SETTINGS_MODULE environment variable
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "InternetAppProject.settings")
 
 # Initialize Django
@@ -14,14 +13,13 @@ from CryptoCrackers.models import CryptoCurrency
 def fetch_and_store_crypto_data():
     # API endpoint
     api_url = "https://api.coingecko.com/api/v3/coins/markets?x_cg_demo_api_key=CG-KoDWqDuHCWkxgES3WWTuZtBT&vs_currency=usd&order=market_cap_desc"
-
     try:
         # Make a GET request to the API
         response = requests.get(api_url)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
-            api_data = response.json()  # Assuming the API returns JSON data
+            api_data = response.json()
 
             # Clear existing data from the CryptoCurrency model
             CryptoCurrency.objects.all().delete()
@@ -59,6 +57,7 @@ def fetch_and_store_crypto_data():
                         last_updated=data['last_updated']
                     )
                     crypto.save()
+            print('fetching new data successfull')
 
             return "Data fetched and stored successfully."
         else:

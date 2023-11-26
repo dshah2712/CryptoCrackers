@@ -528,7 +528,7 @@ ol, li {
 
             {% for news_item in news %}
             <div class="news-card">
-                <img src="../../{{ news_item.image.url}}" alt="{{ news_item.title }}">
+                <img src="../../{{ news_item.image}}" alt="{{ news_item.title }}">
                 <h3>{{ news_item.title }}</h3>
                 <p>{{ news_item.description }}</p>
 {#                <a href="#">Read more</a>#}
