@@ -1,38 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Portfolio</title>
+    <title>Your Portfolio</title>
 </head>
 <body>
-  <form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    
-    <button type="submit">Submit</button>
-</form>
 
-<table>
-    <thead>
-        <tr>
-            <th>Action</th>
-            <th>Coin</th>
-            <th>Quantity</th>
-            <th>Result</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for transaction in transactions %}
+<h1>Your Portfolio</h1>
+
+{% if crypto_data %}
+    <div>
+        <img src="data:image/png;base64,{{ chart_image_base64 }}" alt="Pie Chart">
+    </div>
+    <p>Total Amount: ${{ total_amount }}</p>
+    <table>
+        <thead>
             <tr>
-                <td>{{ transaction.get_action_display }}</td>
-                <td>{{ transaction.coin }}</td>
-                <td>{{ transaction.quantity }}</td>
-                <td>{{ transaction.result }}</td>
+                <th>Cryptocurrency</th>
+                <th>Current Price</th>
+                <th>Quantity</th>
+                <th>Value</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for crypto in crypto_data %}
+                <tr>
+                    <td>{{ crypto.name }}</td>
+                    <td>${{ crypto.current_price }}</td>
+                    <td>{{ crypto.quantity }}</td>
+                    <td>${{ crypto.value }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
+    
+
+{% else %}
+    <p>No cryptocurrency data available.</p>
+{% endif %}
 
 </body>
 </html>

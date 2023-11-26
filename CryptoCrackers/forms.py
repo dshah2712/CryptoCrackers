@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserDetails, portfolioTranscation, Wallet, CryptoCurrency, Purchase, Transaction, portfolioTranscation
+from .models import UserDetails, Wallet, CryptoCurrency, Purchase, Transaction
 import json
 
 
@@ -117,20 +117,20 @@ class PurchaseForm(forms.ModelForm):
 
 
 
-class PortfolioTransactionForm(forms.ModelForm):
-    action = forms.ChoiceField(choices=[('BUY', 'Buy'), ('SELL', 'Sell')])
-    coin = forms.ModelChoiceField(queryset=CryptoCurrency.objects.all())
-    quantity = forms.IntegerField()
+# class PortfolioTransactionForm(forms.ModelForm):
+#     action = forms.ChoiceField(choices=[('BUY', 'Buy'), ('SELL', 'Sell')])
+#     coin = forms.ModelChoiceField(queryset=CryptoCurrency.objects.all())
+#     quantity = forms.IntegerField()
 
-    class Meta:
-        model = portfolioTranscation
-        fields = ['action', 'coin', 'quantity']
+#     class Meta:
+#         model = portfolioTranscation
+#         fields = ['action', 'coin', 'quantity']
 
-    def clean_quantity(self):
-        action = self.cleaned_data['action']
-        quantity = self.cleaned_data['quantity']
+#     def clean_quantity(self):
+#         action = self.cleaned_data['action']
+#         quantity = self.cleaned_data['quantity']
 
-        if action == 'SELL' and quantity > 0:
-            raise forms.ValidationError('Quantity should be negative for sell transactions.')
+#         if action == 'SELL' and quantity > 0:
+#             raise forms.ValidationError('Quantity should be negative for sell transactions.')
 
-        return quantity
+#         return quantity

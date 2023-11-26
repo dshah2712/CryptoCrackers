@@ -31,7 +31,7 @@ urlpatterns = [
     path('sell_crypto/', views.Sell, name='sell_crypto'),
     path('transactions/', views.transaction_list, name='transaction_list'),
     path('purchasehistory_list/', views.purchase_history_list, name='purchasehistory_list'),
-    path('portfolio/', views.transaction_view, name='portfolio'),
+    path('portfolio/', views.portfolio, name='portfolio'),
 
     # path('add_money/', views.add_money, name='add_money'),
     # path('purchase_currency/', views.purchase_currency, name='purchase_currency'),

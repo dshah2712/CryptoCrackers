@@ -82,18 +82,18 @@ class Purchase(models.Model):
     def __str__(self):
         return f"{self.user.username}'s purchase Details"
 
-class portfolioTranscation(models.Model):
-    user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
-    action = models.CharField(max_length=4, choices=[('BUY', 'Buy'), ('SELL', 'Sell')])
-    coin = models.ForeignKey(CryptoCurrency, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-    result = models.IntegerField()
+# class portfolioTranscation(models.Model):
+#     user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
+#     action = models.CharField(max_length=4, choices=[('BUY', 'Buy'), ('SELL', 'Sell')])
+#     coin = models.ForeignKey(CryptoCurrency, on_delete=models.CASCADE)
+#     quantity = models.IntegerField()
+#     result = models.IntegerField()
  
-    def save(self, *args, **kwargs):
-        # Calculate result based on action, coin value, and quantity
-        if self.action == 'BUY':
-            self.result = self.coin.current_price * self.quantity
-        elif self.action == 'SELL':
-            self.result = -1 (self.coin.current_price * self.quantity)
-        super().save(*args, **kwargs)
+#     def save(self, *args, **kwargs):
+#         # Calculate result based on action, coin value, and quantity
+#         if self.action == 'BUY':
+#             self.result = self.coin.current_price * self.quantity
+#         elif self.action == 'SELL':
+#             self.result = -1 (self.coin.current_price * self.quantity)
+#         super().save(*args, **kwargs)
     

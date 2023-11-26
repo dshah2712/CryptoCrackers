@@ -1,13 +1,15 @@
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, redirect, get_object_or_404
-
+import matplotlib.pyplot as plt
+import io
+import base64
 import fetch_store_api
-from .forms import LoginForm, RegisterForm,PortfolioTransactionForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm, ChangePasswordForm, sellform
+from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm, ChangePasswordForm, sellform
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
-from .models import UserDetails, CryptoCurrency, News, Wallet, Purchase, Transaction, portfolioTranscation
+from .models import UserDetails, CryptoCurrency, News, Wallet, Purchase, Transaction
 import matplotlib as mpl
 import random
 mpl.use('Agg')  # Use the 'Agg' backend, which is non-interactive and works well in various environments
@@ -616,6 +618,58 @@ def Sell(request):
 
     return render(request, 'FrontEnd/profile.html', {"user": user, 'form':form ,  'id': "sell"})
 
+def portfolio(request):
+    user_id = request.session.get('_user_id')
+    if not user_id:
+        return redirect('/login/')
+    
+    user = UserDetails.objects.get(id=user_id)
+    cryptocurrencies_dict = user.cryptocurrencies
+    crypto_currencies = CryptoCurrency.objects.all()
+
+    total_amount = 0
+
+    data = []
+
+    for crypto_currency in crypto_currencies:
+        current_price = crypto_currency.current_price
+        name = crypto_currency.name
+
+        # Check if the cryptocurrency is in the user's portfolio
+        if name in cryptocurrencies_dict:
+            quantity = cryptocurrencies_dict[name]
+            value = current_price * quantity
+            total_amount += value
+
+            # Append the data to the list
+            data.append({'name': name, 'current_price': current_price, 'quantity': quantity, 'value': value})
+
+    # Generate Pie Chart
+    labels = [crypto['name'] for crypto in data]
+    sizes = [crypto['value'] for crypto in data]
+
+    fig, ax = plt.subplots()
+    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')  # Equal aspect ratio ensures that the pie is drawn as a circle.
+
+    # Save the plot to a BytesIO object
+    chart_image = io.BytesIO()
+    plt.savefig(chart_image, format='png')
+    chart_image.seek(0)
+
+    # Encode the image to base64
+    chart_image_base64 = base64.b64encode(chart_image.read()).decode('utf-8')
+
+    plt.close()
+
+    context = {
+        'crypto_data': data,
+        'total_amount': total_amount,
+        'chart_image_base64': chart_image_base64,
+    }
+
+    return render(request, 'FrontEnd/portfolio.html', context)
+
 def transaction_list(request):
     user_id = request.session.get('_user_id')
 
@@ -647,26 +701,26 @@ def purchase_history_list(request):
         return render(request, 'FrontEnd/login.html')
     
 # @login_required  # Add the login_required decorator to ensure the user is authenticated
-def transaction_view(request):
-    if request.method == 'POST':
-        form = PortfolioTransactionForm(request.POST)
-        if form.is_valid():
-            transaction = form.save(commit=False)
+# def transaction_view(request):
+#     if request.method == 'POST':
+#         form = PortfolioTransactionForm(request.POST)
+#         if form.is_valid():
+#             transaction = form.save(commit=False)
             
-            # Ensure the user is an instance of UserDetails
-            if isinstance(request.user, UserDetails):
-                transaction.user = request.user
-                if transaction.action == 'BUY':
-                    transaction.result = transaction.coin.current_price * transaction.quantity
-                elif transaction.action == 'SELL':
-                    transaction.result = -1 * transaction.coin.current_price * transaction.quantity
-                transaction.save()
-                return redirect('portfolio')  # Redirect to the transaction list page
-            else:
-                # Handle the case where the user is not an instance of UserDetails
-                # You may want to redirect to a login page or handle it in a way that makes sense for your application.
-                return HttpResponse('Invalid user')
-    else:
-        form = PortfolioTransactionForm()
+#             # Ensure the user is an instance of UserDetails
+#             if isinstance(request.user, UserDetails):
+#                 transaction.user = request.user
+#                 if transaction.action == 'BUY':
+#                     transaction.result = transaction.coin.current_price * transaction.quantity
+#                 elif transaction.action == 'SELL':
+#                     transaction.result = -1 * transaction.coin.current_price * transaction.quantity
+#                 transaction.save()
+#                 return redirect('portfolio')  # Redirect to the transaction list page
+#             else:
+#                 # Handle the case where the user is not an instance of UserDetails
+#                 # You may want to redirect to a login page or handle it in a way that makes sense for your application.
+#                 return HttpResponse('Invalid user')
+#     else:
+#         form = PortfolioTransactionForm()
 
-    return render(request, 'FrontEnd/portfolio.html', {'form': form})
+#     return render(request, 'FrontEnd/portfolio.html', {'form': form})
