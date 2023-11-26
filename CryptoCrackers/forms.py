@@ -73,7 +73,7 @@ class sellform(forms.Form):
         # Take data for that user
         crypto_dict = user_details.cryptocurrencies
 
-        choices = [(key, key) for key in crypto_dict.keys()]
+        choices = [(key, f"{key} ({value})") for key, value in crypto_dict.items()]
 
         self.fields['cryptocurrencies'].choices = choices
 
