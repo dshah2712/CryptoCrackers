@@ -134,3 +134,8 @@ class PurchaseForm(forms.ModelForm):
 #             raise forms.ValidationError('Quantity should be negative for sell transactions.')
 
 #         return quantity
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserDetails
+        fields  = ['username', 'first_name', 'last_name', 'date_of_birth']

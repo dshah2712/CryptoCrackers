@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import io
 import base64
 import fetch_store_api
-from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm, ChangePasswordForm, sellform
+from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm, ChangePasswordForm, UserProfileForm, sellform
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
@@ -358,33 +358,65 @@ def dynamic_Crypto(request, coin_name):
 
     return render(request, 'FrontEnd/dynamicCrypto.html', context)
 
-
 def user_profile(request):
+    user_id = request.session.get('_user_id')
+    # Get user details from the retrieved user id
+    user = UserDetails.objects.get(id=user_id)
+
     if request.method == 'POST':
-        print(request.POST['avatar'])
-        value = request.session.get('_user_id')
-        # Get user details from the retrieved user id
-        user = UserDetails.objects.get(id=value)
-        user.first_name = request.POST['firstname']
-        user.username = request.POST['username']
-        user.last_name = request.POST['lastname']
-        if 'id_image' in request.FILES:
-            user.id_image = request.FILES['id_image']
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            # Process the form data
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.username = form.cleaned_data['username']
+            user.date_of_birth = form.cleaned_data['date_of_birth']
+
+            if 'id_image' in request.FILES:
+                user.id_image = request.FILES['id_image']
         # if len(request.FILES) != 0:
         #     user.id_image = request.FILES['id_image']
 
-        user.save()
-        wish_list = user.wishlist
-        return render(request, 'FrontEnd/profile.html', {'user': user, 'wish_list': wish_list, 'id': "profile-details"})
+            user.save()
+
+            return redirect('/userprofile/')  # Redirect to the user's profile page
     else:
-        # Retrieve the user id from the session
-        value = request.session.get('_user_id')
-        # Get user details from the retrieved user id
-        user = UserDetails.objects.get(id=value)
-        # img = user.objects.filter(file_type='image')
-        wish_list = user.wishlist
-        return render(request, 'FrontEnd/profile.html', {'user': user, 'wish_list': wish_list, 'id': "profile-details"})
-        # return render(request, 'FrontEnd/profile.html', {'user': user})
+        # Populate the form with the user's current profile information
+        form = UserProfileForm(instance=user)
+
+    return render(request, 'FrontEnd/profile.html', {'form': form, 'id': "profile-details",'user': user})
+# def user_profile(request):
+#     if request.method == 'POST':
+#         value = request.session.get('_user_id')
+#         # Get user details from the retrieved user id
+#         user = UserDetails.objects.get(id=value)
+#         print(user, "getting user")
+#         form = UserProfileForm(request.POST, request.FILES)
+        
+#         print(request.POST['avatar'])
+#         value = request.session.get('_user_id')
+#         # Get user details from the retrieved user id
+#         user = UserDetails.objects.get(id=value)
+#         user.first_name = request.POST['firstname']
+#         user.username = request.POST['username']
+#         user.last_name = request.POST['lastname']
+#         if 'id_image' in request.FILES:
+#             user.id_image = request.FILES['id_image']
+#         # if len(request.FILES) != 0:
+#         #     user.id_image = request.FILES['id_image']
+
+#         user.save()
+#         wish_list = user.wishlist
+#         return render(request, 'FrontEnd/profile.html', {'user': user, 'wish_list': wish_list, 'id': "profile-details"})
+#     else:
+#         # Retrieve the user id from the session
+#         value = request.session.get('_user_id')
+#         # Get user details from the retrieved user id
+#         user = UserDetails.objects.get(id=value)
+#         # img = user.objects.filter(file_type='image')
+#         wish_list = user.wishlist
+#         return render(request, 'FrontEnd/profile.html', {'user': user, 'wish_list': wish_list, 'id': "profile-details"})
+#         # return render(request, 'FrontEnd/profile.html', {'user': user})
 
 
 
@@ -644,6 +676,7 @@ def portfolio(request):
             # Append the data to the list
             data.append({'name': name, 'current_price': current_price, 'quantity': quantity, 'value': value})
 
+    highest_value_assert = max(data, key=lambda x: x['current_price'])
     top_10_cryptos = CryptoCurrency.objects.order_by('-current_price')[:10]
 
     # Generate the bar chart
@@ -695,12 +728,14 @@ def portfolio(request):
 
     context = {
         'crypto_data': data,
+        'highest_value_assert': highest_value_assert,
         'total_amount': total_amount,
         'chart_image_base64': chart_image_base64,
         'top_10_cryptos': top_10_cryptos, 
         'chart_image': chart_image,
         'chart_image_bar': chart_image_bar
     }
+    print(max(data, key=lambda x: x['current_price']), "data")
 
     return render(request, 'FrontEnd/portfolio.html', context)
 

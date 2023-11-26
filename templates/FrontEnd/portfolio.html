@@ -1,50 +1,279 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Portfolio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f6f6f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            line-height: 1.6;
+            
+        }
+        .preview, .chart{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .preview{
+            justify-content: left;
+        }
+        .chart{
+            justify-content:  space-evenly;
+            width: 100%;
+        }
+        .card {
+            width: 100%;
+            max-width: 400px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 60px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card-header {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2em;
+            width: 100%;
+            text-align: left;
+        }
+
+        img {
+            display: block;
+            margin: 20px;
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        img:hover {
+            transform: scale(1.05);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        li:hover {
+            background-color: #2980b9;
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 18px;
+            line-height: 1.4;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            max-width: 600px;
+            text-align: left;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #ecf0f1;
+        }
+
+        .list-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .list-container li {
+            margin: 5px;
+        }
+        .chart-card {
+            max-width: 400px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .chart-card:hover {
+            transform: scale(1.05);
+        }
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+    </style>
 </head>
 <body>
 
 <h1>Your Portfolio</h1>
 
 {% if crypto_data %}
-    <div>
-        <img src="data:image/png;base64,{{ chart_image_bar }}" alt="Top 10 Cryptocurrencies Chart" style="width: 150%; max-width: 600px; display: block; margin: auto;">
+    <div class="preview">
+        <div class="card">
+            <div class="card-header">
+                <h2>My Profit</h2>
+            </div>
+            <div class="card-body">
+                <h2 style="color: green"> ${{ total_amount }}</h2> 
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2>Best Performer</h2>
+            </div>
+            <div class="chart-card-body">
+                <h3 > {{ highest_value_assert.name }}</h3> 
+                <h2 style="color: green">$ {{ highest_value_assert.current_price }}</h2>
+            </div>
+        </div>
 
-        <!-- Display the list of top cryptocurrencies -->
-        <ul>
-            {% for crypto in top_10_cryptos %}
-                <li>{{ crypto.name }} - {{ crypto.current_price }}</li>
-            {% endfor %}
-        </ul>
+    </div>
+    
+
+    <div class="chart">
+        <div class="card" style="width: 3000px">
+            <div class="card-header">
+                <h2>Top 10 Performer</h2>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <img src="data:image/png;base64,{{ chart_image_bar }}" alt="Bar Chart">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2>My Assert</h2>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    
+                    <img src="data:image/png;base64,{{ chart_image_base64 }}" alt="Pie Chart">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <h3>My Assert</h3>
+        <table style="width: 2000px">
+            <thead>
+                <tr>
+                    <th>Cryptocurrency</th>
+                    <th>Current Price</th>
+                    <th>Quantity</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crypto in crypto_data %}
+                    <tr>
+                        <td>{{ crypto.name }}</td>
+                        <td>${{ crypto.current_price }}</td>
+                        <td>{{ crypto.quantity }}</td>
+                        <td>${{ crypto.value }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% comment %} <div>
+        <img src="data:image/png;base64,{{ chart_image_bar }}" alt="Top 10 Cryptocurrencies Chart">
+        <div class="list-container">
+            <ul>
+                {% for crypto in top_10_cryptos %}
+                    <li>{{ crypto.name }} - {{ crypto.current_price }}</li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
     <div>
         <img src="data:image/png;base64,{{ chart_image_base64 }}" alt="Pie Chart">
     </div>
-    <p>Total Amount: ${{ total_amount }}</p>
-    <table>
-        <thead>
-            <tr>
-                <th>Cryptocurrency</th>
-                <th>Current Price</th>
-                <th>Quantity</th>
-                <th>Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for crypto in crypto_data %}
+    <div>
+        <p>Total Amount: ${{ total_amount }}</p>
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ crypto.name }}</td>
-                    <td>${{ crypto.current_price }}</td>
-                    <td>{{ crypto.quantity }}</td>
-                    <td>${{ crypto.value }}</td>
+                    <th>Cryptocurrency</th>
+                    <th>Current Price</th>
+                    <th>Quantity</th>
+                    <th>Value</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    
-
+            </thead>
+            <tbody>
+                {% for crypto in crypto_data %}
+                    <tr>
+                        <td>{{ crypto.name }}</td>
+                        <td>${{ crypto.current_price }}</td>
+                        <td>{{ crypto.quantity }}</td>
+                        <td>${{ crypto.value }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> {% endcomment %}
 {% else %}
     <p>No cryptocurrency data available.</p>
 {% endif %}
