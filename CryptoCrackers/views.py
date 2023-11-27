@@ -533,9 +533,7 @@ def add_money(request):
 
             Transaction.objects.create(
                 user_id=user_id,
-                # currency=currency,
                 amount=amount,
-                transaction_type='deposit',
             )
 
             messages.success(request, "Money added successfully.")
