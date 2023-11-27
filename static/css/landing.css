@@ -101,7 +101,7 @@ body {
 }
 
 #menu {
-    font-family: 'Behnschrift Condensed';
+    font-family: 'Poppins', sans-serif;
     font-size: 14px;
     color: white;
     letter-spacing: 2px;
@@ -111,7 +111,7 @@ body {
 }
 
 #menu a{
-    font-family: 'Behnschrift Condensed';
+    font-family: 'Poppins', sans-serif;
     font-size: 14px;
     color: white;
 }

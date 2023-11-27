@@ -371,7 +371,7 @@ def user_profile(request):
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.username = form.cleaned_data['username']
-            user.date_of_birth = form.cleaned_data['date_of_birth']
+
 
             if 'id_image' in request.FILES:
                 user.id_image = request.FILES['id_image']
@@ -458,7 +458,7 @@ def delete_account(request):
         user = UserDetails.objects.get(id=value)
         user.delete()
         request.session.flush()
-        return redirect('/')
+        return redirect('CryptoCrackers:index')
 
     return HttpResponse("Invalid request method", status=405)
 
@@ -467,7 +467,7 @@ def user_logout(request):
     request.session.flush()
     logout(request)
     # messages.success(request,("You Were Logged Out Successfully!"))
-    return redirect('/')
+    return redirect('CryptoCrackers:index')
 
 
 def wishlist(request):
@@ -477,10 +477,20 @@ def wishlist(request):
         return redirect('/login/')
     user = UserDetails.objects.get(id=value)
     wish_list = user.wishlist
-    print(wish_list)
+    cyrpto_details = CryptoCurrency.objects.all()
 
-    return render(request, 'FrontEnd/profile.html', {"user": user, 'wish_list': wish_list, 'id': "wishlist"})
+    # Create a dictionary mapping coin names to details
+    crypto_details_dict = {crypto.name: crypto for crypto in cyrpto_details}
+
+    return render(request, 'FrontEnd/profile.html', {
+        "crypto_details_dict": crypto_details_dict,
+        "user": user,
+        'wish_list': wish_list,
+        'id': "wishlist",
+        'cyrpto_details': cyrpto_details,
+    })
     # return render(request, 'FrontEnd/wishlist.html', {"user": user, 'wish_list': wish_list})
+
 
 
 def add_to_wishlist(request, coin_name):
@@ -509,7 +519,7 @@ def remove_to_wishlist(request, coin_name):
         print(f"{coin_name} not found in wishlist")
 
     # Redirect to the profile or another appropriate URL
-    return redirect('/')
+    return redirect('CryptoCrackers:index')
     print("wishlist removed", user)
     return redirect('CryptoCrackers:index')
 
@@ -551,9 +561,8 @@ def add_money(request):
     else:
         form = AddMoneyForm()
 
-        return render(request, 'FrontEnd/profile.html',
-                      {'form': form, 'balance': user_wallet.balance, 'id': "add-money"})
 
+        return render(request, 'FrontEnd/profile.html',{'form': form, 'balance': user_wallet.balance, 'id':"add-money"})
 
 def purchase_currency(request):
     user_id = request.session.get('_user_id')
@@ -657,7 +666,7 @@ def Sell(request):
                 return JsonResponse({'success': False})
 
         else:
-            return redirect('/')
+            return redirect('CryptoCrackers:index')
     else:
         form = sellform(user_id)
         user = UserDetails.objects.get(pk=user_id)
@@ -665,8 +674,10 @@ def Sell(request):
                           CryptoCurrency.objects.all()]
         crypto_choices_json = json.dumps(crypto_choices, cls=DjangoJSONEncoder)
 
-        return render(request, 'FrontEnd/profile.html',
-                      {'crypto_choices_json': crypto_choices_json, "user": user, 'form': form, 'id': "sell"})
+
+
+
+        return render(request, 'FrontEnd/profile.html', {'crypto_choices_json': crypto_choices_json,"user": user, 'form':form ,  'id': "sell"})
 
 
 def portfolio(request):

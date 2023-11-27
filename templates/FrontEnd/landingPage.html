@@ -1,6 +1,7 @@
 <html>
   <head>
     <link rel="stylesheet" href="../../static/css/landing.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
   </head>
   <body>
     <div id="main">
@@ -18,13 +19,13 @@
       <div id="box3">
         <div id="container">
           <div id="logo">
-            <img src="../../static/t2.png" alt="">
+            {% comment %} <img src="../../static/CryptoCrackersLogo.png" alt="" width="120px" height="40px"> {% endcomment %}
           </div>
           <div id="menu">
             <ul>
-              <li><a  href="{% url 'CryptoCrackers:index' %}" style="">Home</a></li>
-              <li><a  href="{% url 'CryptoCrackers:login' %}" style="">Login</a></li>
-              <li><a  href="{% url 'CryptoCrackers:signup' %}" style="">Sign Up</a></li>
+              <li><a  href="{% url 'CryptoCrackers:index' %}" style="text-decoration: none">Home</a></li>
+              <li><a  href="{% url 'CryptoCrackers:login' %}" style="text-decoration: none">Login</a></li>
+              <li><a  href="{% url 'CryptoCrackers:signup' %}" style="text-decoration: none">Sign Up</a></li>
             </ul>
           </div>
         </div>

@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 app_name = 'CryptoCrackers'
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('index/', views.index, name='index'),
     path('login/', views.user_login, name='login'),
     path('signup/', views.user_signup, name='signup'),
     path('send_forgotpassword/', views.send_forgotpassword_mail, name='send_forgotpassword_mail'),
@@ -25,7 +25,7 @@ urlpatterns = [
     path('wishlist/remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
     path('remove_to_wishlist/<str:coin_name>/', views.remove_to_wishlist, name='remove-to-wishlist'),
     path('wishlist/', views.wishlist, name='wishlist'),
-    path('landing/', views.landing, name='landing'),
+    path('', views.landing, name='landing'),
     path('userprofile/add_money', views.add_money, name='add_money'),
     path('userprofile/purchase_currency/', views.purchase_currency, name='purchase_currency'),
     path('sell_crypto/', views.Sell, name='sell_crypto'),
