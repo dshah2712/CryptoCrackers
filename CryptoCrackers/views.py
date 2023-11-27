@@ -8,13 +8,15 @@ import base64
 from django.views.decorators.csrf import csrf_protect
 
 import fetch_store_api
-from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm, ChangePasswordForm, UserProfileForm, sellform, AccountSecurity
+from .forms import LoginForm, RegisterForm, ForgotPasswordForm, PurchaseForm, AddMoneyForm, ChangePasswordForm, \
+    UserProfileForm, sellform, AccountSecurity
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from .models import UserDetails, CryptoCurrency, News, Wallet, Purchase, Transaction
 import matplotlib as mpl
 import random
+
 mpl.use('Agg')  # Use the 'Agg' backend, which is non-interactive and works well in various environments
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -34,11 +36,12 @@ from django.core.mail import send_mail
 from django.conf import settings
 from fetch_store_api import fetch_and_store_crypto_data
 
+
 def index(request):
     # fetch_and_store_crypto_data()
 
     news = News.objects.all()
-    a  = False
+    a = False
     value = request.session.get('_user_id')
     wish_list = []
     user = None
@@ -127,7 +130,7 @@ def user_login(request):
 
             except UserDetails.DoesNotExist:
                 form.add_error(None, 'User does not exist')
-                return redirect('/login')     
+                return redirect('/login')
     else:
         form = LoginForm()
         return render(request, 'FrontEnd/login.html', {'form': form})
@@ -162,15 +165,14 @@ def user_signup(request):
     return render(request, 'FrontEnd/signup.html', {'form': form})
 
 
-
 def send_forgotpassword_mail(request):
-
     # print("user: ",request.session.get('_user_id'))
     if request.session.get('_user_id'):
         return HttpResponseRedirect(reverse('CryptoCrackers:index'))
     print("forgot pass clicked")
 
     return HttpResponseRedirect(reverse('CryptoCrackers:forgotpassword'))
+
 
 def forgot_password(request):
     if request.session.get('_user_id'):
@@ -179,7 +181,7 @@ def forgot_password(request):
         form = ForgotPasswordForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
-            print("email entered is: ",email)
+            print("email entered is: ", email)
             try:
 
                 email_user = UserDetails.objects.get(email=email)
@@ -205,12 +207,10 @@ def forgot_password(request):
     return render(request, 'FrontEnd/forgotpassword.html', {"form": form})
 
 
-
-
 def change_password(request):
     if request.method == 'POST':
         form = ChangePasswordForm(request.POST, request.FILES)
-        print("details: ",request.POST.get('email'))
+        print("details: ", request.POST.get('email'))
 
         print("forgot password")
         if form.is_valid():
@@ -244,7 +244,7 @@ def change_password(request):
 
     else:
         form = ChangePasswordForm()
-    return render(request, 'FrontEnd/changepassword.html',{"form":form})
+    return render(request, 'FrontEnd/changepassword.html', {"form": form})
 
 
 #
@@ -290,10 +290,7 @@ def change_password(request):
 #     return render(request, 'FrontEnd/payment.html', context)
 
 
-
-
 def dynamic_Crypto(request, coin_name):
-
     coin = get_object_or_404(CryptoCurrency, name=coin_name)
     plt.switch_backend('Agg')
     if coin.current_price < 1:
@@ -333,11 +330,9 @@ def dynamic_Crypto(request, coin_name):
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
 
-
     # ax.spines['bottom'].set_linewidth(0)
     # current_price = prices[-1]
     # price_change =
-
 
     # Remaining plot code...
 
@@ -363,6 +358,7 @@ def dynamic_Crypto(request, coin_name):
 
     return render(request, 'FrontEnd/dynamicCrypto.html', context)
 
+
 def user_profile(request):
     user_id = request.session.get('_user_id')
     # Get user details from the retrieved user id
@@ -379,8 +375,8 @@ def user_profile(request):
 
             if 'id_image' in request.FILES:
                 user.id_image = request.FILES['id_image']
-        # if len(request.FILES) != 0:
-        #     user.id_image = request.FILES['id_image']
+            # if len(request.FILES) != 0:
+            #     user.id_image = request.FILES['id_image']
 
             user.save()
 
@@ -389,7 +385,9 @@ def user_profile(request):
         # Populate the form with the user's current profile information
         form = UserProfileForm(instance=user)
 
-    return render(request, 'FrontEnd/profile.html', {'form': form, 'id': "profile-details",'user': user})
+    return render(request, 'FrontEnd/profile.html', {'form': form, 'id': "profile-details", 'user': user})
+
+
 # def user_profile(request):
 #     if request.method == 'POST':
 #         value = request.session.get('_user_id')
@@ -397,7 +395,7 @@ def user_profile(request):
 #         user = UserDetails.objects.get(id=value)
 #         print(user, "getting user")
 #         form = UserProfileForm(request.POST, request.FILES)
-        
+
 #         print(request.POST['avatar'])
 #         value = request.session.get('_user_id')
 #         # Get user details from the retrieved user id
@@ -424,32 +422,34 @@ def user_profile(request):
 #         # return render(request, 'FrontEnd/profile.html', {'user': user})
 
 
-
 def acc_sec(request):
     value = request.session.get('_user_id')
     user = UserDetails.objects.get(id=value)
     if request.method == 'POST':
-        form=AccountSecurity(request.POST)
+        form = AccountSecurity(request.POST)
         if form.is_valid():
-            password=form.cleaned_data['new_password']
+            password = form.cleaned_data['new_password']
             confirm = form.cleaned_data['confirm_password']
-            google=False
+            google = False
             if password == confirm:
                 user.password = make_password(password)
                 user.save()
                 return render(request, 'FrontEnd/profile.html',
-                              {'form': form, 'id': "account-security", 'user': user, 'google': google,'message':'Password changed Successfully'})
+                              {'form': form, 'id': "account-security", 'user': user, 'google': google,
+                               'message': 'Password changed Successfully'})
 
             else:
                 return render(request, 'FrontEnd/profile.html',
-                              {'form': form, 'id': "account-security", 'user': user, 'google': google,'err_message':'Password and Confirm password do not match'})
+                              {'form': form, 'id': "account-security", 'user': user, 'google': google,
+                               'err_message': 'Password and Confirm password do not match'})
     else:
         form = AccountSecurity()
-        if not user.password :
-            google=True
+        if not user.password:
+            google = True
         else:
-            google=False
-    return render(request, 'FrontEnd/profile.html', {'form': form, 'id': "account-security",'user': user,'google':google})
+            google = False
+    return render(request, 'FrontEnd/profile.html',
+                  {'form': form, 'id': "account-security", 'user': user, 'google': google})
 
 
 def delete_account(request):
@@ -463,13 +463,11 @@ def delete_account(request):
     return HttpResponse("Invalid request method", status=405)
 
 
-
 def user_logout(request):
     request.session.flush()
     logout(request)
     # messages.success(request,("You Were Logged Out Successfully!"))
     return redirect('/')
-
 
 
 def wishlist(request):
@@ -481,9 +479,8 @@ def wishlist(request):
     wish_list = user.wishlist
     print(wish_list)
 
-    return render(request, 'FrontEnd/profile.html',{"user": user, 'wish_list': wish_list, 'id': "wishlist"})
+    return render(request, 'FrontEnd/profile.html', {"user": user, 'wish_list': wish_list, 'id': "wishlist"})
     # return render(request, 'FrontEnd/wishlist.html', {"user": user, 'wish_list': wish_list})
-
 
 
 def add_to_wishlist(request, coin_name):
@@ -503,7 +500,6 @@ def add_to_wishlist(request, coin_name):
 def remove_to_wishlist(request, coin_name):
     value = request.session.get('_user_id')
     user = UserDetails.objects.get(id=value)
-
 
     if coin_name in user.wishlist:
         user.wishlist.remove(coin_name)
@@ -541,19 +537,24 @@ def add_money(request):
                 amount=amount,
                 transaction_type='deposit',
             )
-            # messages.success(request, "Money added successfully.")
 
-            return JsonResponse({'success': True})
+            messages.success(request, "Money added successfully.")
+            form = AddMoneyForm()
+            return render(request, 'FrontEnd/profile.html',
+                          {'form': form, 'balance': user_wallet.balance, 'id': "add-money"})
 
         else:
-            return JsonResponse({'success': False, 'error': 'Error adding money in wallet'})
-
+            # Render the HTML with an error message
+            messages.error(request, "Error adding money in wallet.")
+            form = AddMoneyForm()
+            return render(request, 'FrontEnd/profile.html',
+                          {'form': form, 'balance': user_wallet.balance, 'id': "add-money"})
 
     else:
         form = AddMoneyForm()
 
-    balance = user_wallet.balance
-    return render(request, 'FrontEnd/profile.html', {'form': form, 'balance': balance, 'id': "add-money"})
+        return render(request, 'FrontEnd/profile.html',
+                      {'form': form, 'balance': user_wallet.balance, 'id': "add-money"})
 
 
 def purchase_currency(request):
@@ -616,7 +617,8 @@ def purchase_currency(request):
         user = UserDetails.objects.get(pk=user_id)
         return render(request, 'FrontEnd/profile.html',
                       {'form': form, 'balance': user_wallet.balance, 'crypto_choices_json': crypto_choices_json,
-                       'id': "purchase-currency","user":user})
+                       'id': "purchase-currency", "user": user})
+
 
 @csrf_protect
 def Sell(request):
@@ -627,23 +629,22 @@ def Sell(request):
     user_wallet, created = Wallet.objects.get_or_create(user_id=user_id)
 
     if request.method == 'POST':
-        form = sellform(user_id,request.POST)
+        form = sellform(user_id, request.POST)
         if form.is_valid():
             cryptocurrency = request.POST['cryptocurrencies']
             quantity = request.POST['sell_quantity']
-            cryptmod=CryptoCurrency.objects.get(name=cryptocurrency)
+            cryptmod = CryptoCurrency.objects.get(name=cryptocurrency)
             total_amount = cryptmod.current_price_cad * Decimal(quantity)
             user = UserDetails.objects.get(id=user_id)
 
             # Get the current cryptocurrencies of the user
             cryptocurrencies = user.cryptocurrencies
             print(type(cryptocurrencies[cryptocurrency]))
-            #
-            #
-            if int(quantity) <= int(cryptocurrencies[cryptocurrency]) :
+
+            if int(quantity) <= int(cryptocurrencies[cryptocurrency]):
                 user_wallet.balance += total_amount
                 # print(user_wallet.balance)
-                cryptocurrencies[cryptocurrency]=int(cryptocurrencies[cryptocurrency])-int(quantity)
+                cryptocurrencies[cryptocurrency] = int(cryptocurrencies[cryptocurrency]) - int(quantity)
                 if int(cryptocurrencies[cryptocurrency]) <= 0:
                     del cryptocurrencies[cryptocurrency]
 
@@ -652,13 +653,11 @@ def Sell(request):
                 # print(user.cryptocurrencies)
                 user_wallet.save()
                 user.save()
-                # return render(request, 'FrontEnd/profile.html', {"user": user, 'form': form, 'id': "sell", 'success_message': 'Sell has been made successfully and money added!'})
 
                 return JsonResponse({'success': True})
-            else:    # return JsonResponse({'success': False, 'error': 'Trying to sell more quantity then purchase coin has'})
+            else:
                 return JsonResponse({'success': False})
 
-                # return render(request, 'FrontEnd/profile.html', {"user": user, 'form': form, 'id': "sell", 'error_message': 'Trying to sell more quantity than purchase coin has'})
         else:
             return redirect('/')
     else:
@@ -668,12 +667,15 @@ def Sell(request):
                           CryptoCurrency.objects.all()]
         crypto_choices_json = json.dumps(crypto_choices, cls=DjangoJSONEncoder)
 
-        return render(request, 'FrontEnd/profile.html', {'crypto_choices_json': crypto_choices_json,"user": user, 'form':form ,  'id': "sell"})
+        return render(request, 'FrontEnd/profile.html',
+                      {'crypto_choices_json': crypto_choices_json, "user": user, 'form': form, 'id': "sell"})
+
+
 def portfolio(request):
     user_id = request.session.get('_user_id')
     if not user_id:
         return redirect('/login/')
-    
+
     user = UserDetails.objects.get(id=user_id)
     cryptocurrencies_dict = user.cryptocurrencies
 
@@ -763,7 +765,6 @@ def portfolio(request):
         return render(request, 'FrontEnd/portfolio.html', context)
 
 
-
 def transaction_list(request):
     user_id = request.session.get('_user_id')
 
@@ -778,7 +779,8 @@ def transaction_list(request):
     else:
         # Handle the case when the user ID is not present in the session (you can redirect to a login page or display an error message)
         return render(request, 'FrontEnd/login.html')
-    
+
+
 def purchase_history_list(request):
     user_id = request.session.get('_user_id')
 
@@ -793,4 +795,3 @@ def purchase_history_list(request):
     else:
         # Handle the case when the user ID is not present in the session (you can redirect to a login page or display an error message)
         return render(request, 'FrontEnd/login.html')
-    

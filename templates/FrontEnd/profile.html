@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <title>My Profile</title>
     <style>
         body {
@@ -513,36 +514,6 @@
                   });
 
 
-                  document.getElementById("addmoney").addEventListener("submit", function (event) {
-                      event.preventDefault(); // Prevent the default form submission
-
-                      // Use AJAX to submit the form data to your Django view
-                      const formData = new FormData(document.getElementById("addmoney"));
-
-                      fetch("{% url 'CryptoCrackers:add_money' %}", {
-                        method: "POST",
-                        body: formData,
-                      })
-                        .then(response => response.json())
-                        .then(data => {
-                          // Display the message in a popup
-
-                          if (data.success) {
-                                alert("Money added successfully");
-                                // Optionally, reset the form
-                                document.getElementById("addmoney").reset();
-                            } else {
-                                alert("Error adding money");
-                            }
-
-                          // Optionally, reset the form
-                          document.getElementById("addmoney").reset();
-                        })
-                        .catch(error => {
-                          console.error('Error:', error);
-                          // Handle error if needed
-                        });
-                  });
                 document.getElementById("sell-form").addEventListener("submit",  function (event) {
                     event.preventDefault();
 
