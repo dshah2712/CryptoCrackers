@@ -3,191 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>My Profile</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
+    <link rel="stylesheet" href="../../static/css/profile.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        .profile-container {
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .sidebar {
-            width: 30%;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-
-        .content {
-            width: 40%;
-            padding: 20px;
-            background-color: #fff;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 20px;
-        }
-
-        .sidebar a {
-            text-decoration: none;
-            color: #333;
-            display: block;
-            padding: 5px 0;
-        }
-
-        .sidebar a:hover {
-            background-color: darkgrey;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: bold;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .save-button {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .delete-button {
-            background-color: red;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .save-button:hover {
-            background-color: #0056b3;
-        }
-
-        .delete-button:hover {
-            background-color: darkred;
-        }
-
-         ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            width: 80%;
-            max-width: 400px;
-        }
-
-        li {
-            background-color: #fff;
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        img {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        a {
-            text-decoration: none;
-            color: #3498db;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .wishlist-icon {
-            margin-top: 20px;
-        }
-
-        .wishlist-icon img {
-            width: 60px;
-            height: 60px;}
-        .alert-box {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-}
-
-.alert-box .alert-header {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px;
-    text-align: center;
-    font-weight: bold;
-}
-
-.alert-box .alert-body {
-    background-color: #fff;
-    padding: 20px;
-    text-align: center;
-}
-
-. {
-    font-family: Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
-
-  #purchase-table, #transaction-table {
-    font-family: Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 150%;
-  }
-  
-  #purchase-table td, #purchase-table th, #transaction-table td, #transaction-table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
-  
-  #purchase-table tr:nth-child(even){background-color: #f2f2f2;}
-  #transaction-table tr:nth-child(even){background-color: #f2f2f2;}
-  
-  #purchase-table tr:hover {background-color: #ddd;}
-  #transaction-table tr:hover {background-color: #ddd;}
-  
-  #purchase-table th, #transaction-table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #003366;
-    color: white;
-  }
-
+       
 
     </style>
 
@@ -252,7 +71,7 @@
     <div class="profile-container">
         <div class="sidebar">
             <ul>
-                <li><a href="{% url 'CryptoCrackers:index' %}" >Back to Index</a></li>
+                <li><a href="{% url 'CryptoCrackers:index' %}" >Back to Home</a></li>
                 <li><a href="{% url 'CryptoCrackers:profile' %}" >Profile Details</a></li>
                 <li><a  href="{% url 'CryptoCrackers:acc_sec' %}" >Account Security</a></li>
                 <li><a href="{% url 'CryptoCrackers:wishlist' %}" >Wishlist</a></li>
@@ -283,27 +102,7 @@
                     {% csrf_token %}
                     {{form.as_p}}
                     
-                    {% comment %} <div class="form-group">
-                        <label for="avatar">Choose Avatar:</label>
-
-                        <input type="text" id="avatar" name="avatar">
-                    </div>
-                    <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" value="{{ user.username }}" id="username" name="username">
-                    </div>
-                    <div class="form-group">
-                        <label for="birthdate">Birthdate:</label>
-                        <input type="date" value="{{ user.date_of_birth }}" id="birthdate" name="birthdate">
-                    </div>
-                    <div class="form-group">
-                        <label for="firstname">First Name:</label>
-                        <input type="text" value="{{ user.first_name }}" id="firstname" name="firstname">
-                    </div>
-                    <div class="form-group">
-                        <label for="lastname">Last Name:</label>
-                        <input type="text" value="{{ user.last_name }}" id="lastname" name="lastname">
-                    </div> {% endcomment %}
+                
                      <div class="form-group">
                         <label for="id_image">Upload ID Image:</label>
                         <input type="file" value="{{ user.id_image.name }}" id="id_image" name="id_image" accept="image/*">
@@ -345,20 +144,48 @@
 
             <div id="wishlist" style="display: none;">
                 <h1>Wishlist</h1>
-                <ul>
-                    {% for wishlist_item in wish_list %}
-                        <li>
-                            <a href="{% url 'CryptoCrackers:dynamic_crypto' coin_name=wishlist_item %}">
-                                <span>{{ wishlist_item }}</span>
-                            </a>
-                            <a href="remove_to_wishlist/{{ wishlist_item }}">
-                                <img src="../../static/icon2.png" alt="Remove" title="Remove from Wishlist">
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <div class="wishlist-container">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>Coin Image</th>
+                                <th>Coin Name</th>
+                                <th>Price Change (24h)</th>
+                                <th>Current Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for wishlist_item in wish_list %}
+                                {% for crypto_detail in cyrpto_details %}
+                                    {% if crypto_detail.name == wishlist_item %}
+                                        <tr style="background-color: {% cycle '#f2f2f2' '#e6e6e6' %};">
+                                            <td>
+                                                <img src="{{ crypto_detail.image }}" style="width: 30px; height: 30px;" alt="Coin Image">
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'CryptoCrackers:dynamic_crypto' coin_name=wishlist_item %}">
+                                                    <span>{{ wishlist_item }}</span>
+                                                </a>
+                                            </td>
+                                            <td style="color: {% if crypto_detail.price_change_percentage_24h < 0 %}red{% else %}green{% endif %};">
+                                                {{ crypto_detail.price_change_percentage_24h }}%
+                                            </td>
+                                            <td>{{ crypto_detail.current_price }}</td>
+                                            <td>
+                                                <a href="remove_to_wishlist/{{ wishlist_item }}">
+                                                    <img src="../../static/icon2.png" alt="Remove" title="Remove from Wishlist" height=20px width=20px>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div id="transaction-history" style=" display: none;">
+                                    <div id="transaction-history" style=" display: none;">
                 <h1>Transactions</h1>
                 <table id="transaction-table">
                     <thead>
@@ -366,7 +193,7 @@
                             <th>User</th>
                             <th>Amount</th>
                             <th>Timestamp</th>
-                            <th>Transaction Type</th>
+                           
                         </tr>
                     </thead>
                     <tbody>
@@ -375,7 +202,7 @@
                             <td>{{ transaction.user.username }}</td>
                             <td>{{ transaction.amount }}</td>
                             <td>{{ transaction.timestamp }}</td>
-                            <td>{{ transaction.transaction_type }}</td>
+                          
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -508,45 +335,15 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            // Handle error if needed
+                    
                         });
                   });
 
 
-                  document.getElementById("addmoney").addEventListener("submit", function (event) {
-                      event.preventDefault(); // Prevent the default form submission
-
-                      // Use AJAX to submit the form data to your Django view
-                      const formData = new FormData(document.getElementById("addmoney"));
-
-                      fetch("{% url 'CryptoCrackers:add_money' %}", {
-                        method: "POST",
-                        body: formData,
-                      })
-                        .then(response => response.json())
-                        .then(data => {
-                          // Display the message in a popup
-
-                          if (data.success) {
-                                alert("Money added successfully");
-                                // Optionally, reset the form
-                                document.getElementById("addmoney").reset();
-                            } else {
-                                alert("Error adding money");
-                            }
-
-                          // Optionally, reset the form
-                          document.getElementById("addmoney").reset();
-                        })
-                        .catch(error => {
-                          console.error('Error:', error);
-                          // Handle error if needed
-                        });
-                  });
                 document.getElementById("sell-form").addEventListener("submit",  function (event) {
                     event.preventDefault();
 
-                    // Use AJAX to submit the form data to your Django view
+    
                     const formData = new FormData(document.getElementById("sell-form"));
 
                         fetch("{% url 'CryptoCrackers:sell_crypto' %}", {
@@ -555,10 +352,10 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            // Display the message in a popup
+                        
                             if (data.success) {
                                 alert("Sell successful.");
-                                // Optionally, reset the form
+                            
                                 document.getElementById("sell-form").reset();
                             } else {
                                 alert("Trying to sell more quantity of coin compared to what you have");

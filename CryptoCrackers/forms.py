@@ -111,27 +111,7 @@ class PurchaseForm(forms.ModelForm):
         cleaned_data['total_amount'] = total_amount
         return cleaned_data
 
-
-
-# class PortfolioTransactionForm(forms.ModelForm):
-#     action = forms.ChoiceField(choices=[('BUY', 'Buy'), ('SELL', 'Sell')])
-#     coin = forms.ModelChoiceField(queryset=CryptoCurrency.objects.all())
-#     quantity = forms.IntegerField()
-
-#     class Meta:
-#         model = portfolioTranscation
-#         fields = ['action', 'coin', 'quantity']
-
-#     def clean_quantity(self):
-#         action = self.cleaned_data['action']
-#         quantity = self.cleaned_data['quantity']
-
-#         if action == 'SELL' and quantity > 0:
-#             raise forms.ValidationError('Quantity should be negative for sell transactions.')
-
-#         return quantity
-
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserDetails
-        fields  = ['username', 'first_name', 'last_name', 'date_of_birth']
+        fields  = ['username', 'first_name', 'last_name']

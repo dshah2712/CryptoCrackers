@@ -1,9 +1,9 @@
 body {
-    background-image: linear-gradient(135deg, #1b09b4 10%, #7df2f8 100%);
+    background-color: #fff;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Poppins", sans-serif;
     color: #333333;
     margin: 0;
     padding: 0;
@@ -73,14 +73,15 @@ body {
     flex: 1;
     padding: 40px;
     box-sizing: border-box;
-    background: #FFFFFF;
+    background: #1f2937;
     border-radius: 10px;
     overflow: hidden;
 }
 
-.box-form .right h5 {
+.box-form .right h3 {
     font-size: 2em;
     line-height: 0;
+    color: white;
 }
 
 .box-form .right p {
@@ -90,6 +91,7 @@ body {
 
 .box-form .right .inputs {
     overflow: hidden;
+    color: white;
 }
 
 .box-form .right label {

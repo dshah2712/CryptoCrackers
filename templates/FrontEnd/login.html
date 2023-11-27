@@ -3,13 +3,14 @@
 <!--?{#<html>#}-->
 <!--?{#<head>#}-->
 <!--?{#	<title>Login Page</title>#}-->
-<!--?{#	<link rel="stylesheet" href="../../static/css/style.css">#}-->
+<!--?{#	<link rel="stylesheet" href="../../static/css/login.css">#}-->
 
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Login Page</title>
-	<link rel="stylesheet" href="../../static/css/style.css">
+	<link rel="stylesheet" href="../../static/css/login.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
 </head>
 
 <div class="box-form">
@@ -18,8 +19,8 @@
 		<h1>Welcome Back</h1>
 		<p>Securely manage your cryptocurrencies and explore the world of blockchain technology.</p>
 		<span>
-			<p>login with social media</p>
-			<a href="{% provider_login_url "google" %}">Google</a>
+			<p>Login with Google instead?</p>
+			<a href="{% provider_login_url "google" %}" style="text-decoration: none">Google</a>
 		</span>
 		</div>
 	</div>
@@ -27,7 +28,7 @@
 
 		<div class="right">
 		<h5>Login</h5>
-		<p>Don't have an account? <a href="http://localhost:8000/signup">Creat Your Account</a> it takes less than a minute</p>
+		<p>Don't have an account? <a href="http://localhost:8000/signup" style="color:#1e40af;">Create Your Account</a> it takes less than a minute</p>
             <form action="" method="post">
         {% csrf_token %}
                 <div class="inputs">

@@ -458,7 +458,7 @@ def delete_account(request):
         user = UserDetails.objects.get(id=value)
         user.delete()
         request.session.flush()
-        return redirect('/')
+        return redirect('CryptoCrackers:index')
 
     return HttpResponse("Invalid request method", status=405)
 
@@ -468,7 +468,7 @@ def user_logout(request):
     request.session.flush()
     logout(request)
     # messages.success(request,("You Were Logged Out Successfully!"))
-    return redirect('/')
+    return redirect('CryptoCrackers:index')
 
 
 
@@ -479,10 +479,18 @@ def wishlist(request):
         return redirect('/login/')
     user = UserDetails.objects.get(id=value)
     wish_list = user.wishlist
-    print(wish_list)
+    cyrpto_details = CryptoCurrency.objects.all()
 
-    return render(request, 'FrontEnd/profile.html',{"user": user, 'wish_list': wish_list, 'id': "wishlist"})
-    # return render(request, 'FrontEnd/wishlist.html', {"user": user, 'wish_list': wish_list})
+    # Create a dictionary mapping coin names to details
+    crypto_details_dict = {crypto.name: crypto for crypto in cyrpto_details}
+
+    return render(request, 'FrontEnd/profile.html', {
+        "crypto_details_dict": crypto_details_dict,
+        "user": user,
+        'wish_list': wish_list,
+        'id': "wishlist",
+        'cyrpto_details': cyrpto_details,
+    })
 
 
 
@@ -513,7 +521,7 @@ def remove_to_wishlist(request, coin_name):
         print(f"{coin_name} not found in wishlist")
 
     # Redirect to the profile or another appropriate URL
-    return redirect('/')
+    return redirect('CryptoCrackers:index')
     print("wishlist removed", user)
     return redirect('CryptoCrackers:index')
 
@@ -537,24 +545,25 @@ def add_money(request):
 
             Transaction.objects.create(
                 user_id=user_id,
-                # currency=currency,
                 amount=amount,
-                transaction_type='deposit',
             )
-            # messages.success(request, "Money added successfully.")
 
-            return JsonResponse({'success': True})
+            messages.success(request, "Money added successfully.")
+            form = AddMoneyForm()
+            return render(request, 'FrontEnd/profile.html',
+                          {'form': form, 'balance': user_wallet.balance, 'id': "add-money"})
 
         else:
-            return JsonResponse({'success': False, 'error': 'Error adding money in wallet'})
-
+            # Render the HTML with an error message
+            messages.error(request, "Error adding money in wallet.")
+            form = AddMoneyForm()
+            return render(request, 'FrontEnd/profile.html',
+                          {'form': form, 'balance': user_wallet.balance, 'id': "add-money"})
 
     else:
         form = AddMoneyForm()
 
-    balance = user_wallet.balance
-    return render(request, 'FrontEnd/profile.html', {'form': form, 'balance': balance, 'id': "add-money"})
-
+        return render(request, 'FrontEnd/profile.html',{'form': form, 'balance': user_wallet.balance, 'id':"add-money"})
 
 def purchase_currency(request):
     user_id = request.session.get('_user_id')
@@ -660,7 +669,7 @@ def Sell(request):
 
                 # return render(request, 'FrontEnd/profile.html', {"user": user, 'form': form, 'id': "sell", 'error_message': 'Trying to sell more quantity than purchase coin has'})
         else:
-            return redirect('/')
+            return redirect('CryptoCrackers:index')
     else:
         form = sellform(user_id)
         user = UserDetails.objects.get(pk=user_id)
@@ -669,6 +678,7 @@ def Sell(request):
         crypto_choices_json = json.dumps(crypto_choices, cls=DjangoJSONEncoder)
 
         return render(request, 'FrontEnd/profile.html', {'crypto_choices_json': crypto_choices_json,"user": user, 'form':form ,  'id': "sell"})
+
 def portfolio(request):
     user_id = request.session.get('_user_id')
     if not user_id:
