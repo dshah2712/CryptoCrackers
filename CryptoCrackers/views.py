@@ -468,7 +468,7 @@ def delete_account(request):
 
 
 def user_logout(request):
-    request.session.flush()
+    request.session.delete()
     # messages.success(request,("You Were Logged Out Successfully!"))
     return redirect('CryptoCrackers:index')
 
@@ -586,7 +586,7 @@ def purchase_currency(request):
             if user_wallet.balance >= total_amount:
                 user_wallet.balance -= total_amount
 
-                Purchase.objects.create(
+                purchase = Purchase.objects.create(
                     user_id=user_id,
                     cryptocurrency=cryptocurrency,
                     quantity=quantity,
@@ -608,7 +608,7 @@ def purchase_currency(request):
                 user.cryptocurrencies = cryptocurrencies
                 user_wallet.save()
                 user.save()
-
+                purchase.save()
                 return JsonResponse({'success': True, 'total_amount': total_amount})
             else:
                 return JsonResponse({'success': False, 'error': 'Insufficient balance'})
@@ -663,7 +663,6 @@ def Sell(request):
                 # print(user.cryptocurrencies)
                 user_wallet.save()
                 user.save()
-
                 return JsonResponse({'success': True})
             else:
                 return JsonResponse({'success': False})

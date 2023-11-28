@@ -18,6 +18,13 @@ class RegisterForm(forms.ModelForm):
 
         if password and password_confirm and password != password_confirm:
             self.add_error('password_confirm', 'Passwords do not match')
+        if len(password)<5 or len(password)>10:
+            self.add_error('password', 'Length of password should be between 5 and 10 ')
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        # Add a custom message for the password field
+        self.fields['password'].help_text = 'Your password must be at least 5 characters long and max 10 characters.'
 
 
 class LoginForm(forms.Form):
