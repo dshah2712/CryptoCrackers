@@ -141,7 +141,7 @@
 
                 <h2>Delete Account</h2>
                 <p>Deleting your account is irreversible and will remove all your data.</p>
-                <form action="delete_account/" method="post">
+                <form action="{% url 'CryptoCrackers:delete_account' %}" method="post">
                     {% csrf_token %}
                     <button class="delete-button" onclick="confirmDelete()" type="submit">Delete Account</button>
                 </form>

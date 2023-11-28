@@ -38,7 +38,7 @@ from fetch_store_api import fetch_and_store_crypto_data
 
 
 def index(request):
-    # fetch_and_store_crypto_data()
+    fetch_and_store_crypto_data()
 
     news = News.objects.all()
     a = False
@@ -113,6 +113,7 @@ def user_login(request):
                 if user:
                     if user.password is None:
                         form.add_error(None, 'Google Auth Sign In Required')
+                        return render(request, 'FrontEnd/login.html', {'form': form})
                     else:
                         if check_password(password, user.password):
                             # Manually set the user's ID in the session to log them in
@@ -468,7 +469,6 @@ def delete_account(request):
 
 def user_logout(request):
     request.session.flush()
-    logout(request)
     # messages.success(request,("You Were Logged Out Successfully!"))
     return redirect('CryptoCrackers:index')
 
