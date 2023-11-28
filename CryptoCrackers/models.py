@@ -4,14 +4,12 @@ from django.db import models
 class UserDetails(models.Model):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(max_length=255, unique=True)
-    password = models.CharField(max_length=255,null=True, blank=True)
-    first_name = models.CharField(max_length=255, null = True, blank=True)
-    last_name = models.CharField(max_length=255, null = True, blank=True)
-    date_of_birth = models.DateField(blank=True, null = True)
-    id_image = models.ImageField(upload_to='id_images/', null=True, blank=True)
+    password = models.CharField(max_length=255, null=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255,)
+    id_image = models.ImageField(upload_to='id_images/', null=True)
     wishlist=models.JSONField(default=list,blank=True)
     cryptocurrencies = models.JSONField(default=dict)
-    # avatar = models.ImageField(blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -56,7 +54,6 @@ class CryptoCurrency(models.Model):
 
 class Wallet(models.Model):
     user = models.OneToOneField(UserDetails, on_delete=models.CASCADE)
-    # currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
@@ -66,7 +63,6 @@ class Transaction(models.Model):
     user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
-
 
     def __str__(self):
         return f"{self.user.username}'s Transaction Details"
@@ -80,19 +76,3 @@ class Purchase(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s purchase Details"
-
-# class portfolioTranscation(models.Model):
-#     user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
-#     action = models.CharField(max_length=4, choices=[('BUY', 'Buy'), ('SELL', 'Sell')])
-#     coin = models.ForeignKey(CryptoCurrency, on_delete=models.CASCADE)
-#     quantity = models.IntegerField()
-#     result = models.IntegerField()
- 
-#     def save(self, *args, **kwargs):
-#         # Calculate result based on action, coin value, and quantity
-#         if self.action == 'BUY':
-#             self.result = self.coin.current_price * self.quantity
-#         elif self.action == 'SELL':
-#             self.result = -1 (self.coin.current_price * self.quantity)
-#         super().save(*args, **kwargs)
-    

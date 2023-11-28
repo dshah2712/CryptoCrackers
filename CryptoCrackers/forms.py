@@ -1,6 +1,6 @@
 from django import forms
-from .models import UserDetails, Wallet, CryptoCurrency, Purchase, Transaction
-import json
+from .models import UserDetails, CryptoCurrency, Purchase, Transaction
+
 
 
 class RegisterForm(forms.ModelForm):
@@ -53,14 +53,6 @@ class ForgotPasswordForm(forms.Form):
     email = forms.EmailField(required=True)
 
 
-def _init_(self, *args, **kwargs):
-    super(RegisterForm, self)._init_(*args, **kwargs)
-    self.fields['first_name'].required = True
-    self.fields['last_name'].required = True
-    self.fields['email'].required = True
-    self.fields['username'].required = True
-
-
 class sellform(forms.Form):
 
     cryptocurrencies = forms.ChoiceField(choices=[])
@@ -88,14 +80,13 @@ class AddMoneyForm(forms.ModelForm):
 
 
 class PurchaseForm(forms.ModelForm):
-    # quantity = forms.DecimalField(widget=forms.TextInput(attrs={'id': 'id_quantity', 'step': 'any'}))
 
     class Meta:
         model = Purchase
         fields = ['cryptocurrency', 'quantity']
         widgets = {
-            'cryptocurrency': forms.Select(attrs={'id': 'id_cryptocurrency'}),
-            'quantity': forms.TextInput(attrs={'id': 'id_quantity'}),
+            'cryptocurrency': forms.Select(),
+            'quantity': forms.TextInput(),
         }
 
     def __init__(self, user_id, *args, **kwargs):

@@ -19,7 +19,7 @@
     <div class="container">
         <div class="navbar">
       <ul>
-      <li style="margin: 10px 20px"> <img src="../../static/CryptoCrackersLogo.png" width="120px" height="40px"></li>
+      <li style="margin: 10px 20px"> <img src="../../static/CryptoCrackersLogo.jpg" width="120px" height="40px"></li>
       <li><a href="{% url 'CryptoCrackers:wishlist' %}" onclick="redirectToWishlist()">My Wishlist</a></li>
       <li><a href="{% url 'CryptoCrackers:purchase_currency' %}">Trade</a></li>
     <li style="color: #424961">Currency: 
@@ -30,7 +30,7 @@
       </select>
     </li>
     <li><a href="{% url 'CryptoCrackers:portfolio' %}"> My Portfolio</a></li>
-  <li class="profile"><img src="../../static/profile_icon_dark.png" alt="Profile Image" id="profile-image" width="35px" height="35px"/>
+  <li class="profile"><img src="../../static/profile_icon_dark.jpg" alt="Profile Image" id="profile-image" width="35px" height="35px"/>
   <div class="sub-menu-1">
     <ul>
         {% if user_log %}
