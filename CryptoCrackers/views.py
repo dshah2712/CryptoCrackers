@@ -123,14 +123,17 @@ def user_login(request):
                             # return HttpResponseRedirect(reverse('CryptoCrackers:profile'))
                         else:
                             form.add_error(None, 'Invalid login credentials')
-                            return redirect('/login')
+                            return render(request, 'FrontEnd/login.html', {'form': form})
+                            # return redirect('/login')
                 # else:
                 #     form.add_error(None, 'User Does Not Exist')
                 #     return redirect('/')                    
 
             except UserDetails.DoesNotExist:
                 form.add_error(None, 'User does not exist')
-                return redirect('/login')
+                # return redirect('/login')
+                return render(request, 'FrontEnd/login.html', {'form': form})
+
     else:
         form = LoginForm()
         return render(request, 'FrontEnd/login.html', {'form': form})
