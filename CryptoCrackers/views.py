@@ -109,7 +109,7 @@ def user_login(request):
 
             try:
                 user = UserDetails.objects.get(username=username)
-                print("user details are:", user.password)
+                # print("user details are:", user.password)
                 if user:
                     if user.password is None:
                         form.add_error(None, 'Google Auth Sign In Required')
@@ -140,6 +140,21 @@ def user_login(request):
         return render(request, 'FrontEnd/login.html', {'form': form})
 
 
+def user_signup(request):
+    if request.session.get('_user_id'):
+        return HttpResponseRedirect(reverse('CryptoCrackers:index'))
+    if request.method == 'POST':
+        form = RegisterForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.password = make_password(form.cleaned_data['password'])
+            user.save()
+            return redirect('/login/')
+    else:
+        form = RegisterForm()
+    return render(request, 'FrontEnd/signup.html', {'form': form})
+
+
 def process_form(request):
     print("inside process form")
     if request.method == 'POST':
@@ -154,19 +169,6 @@ def process_form(request):
         return render(request, 'FrontEnd/login.html')
 
 
-def user_signup(request):
-    if request.session.get('_user_id'):
-        return HttpResponseRedirect(reverse('CryptoCrackers:index'))
-    if request.method == 'POST':
-        form = RegisterForm(request.POST, request.FILES)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.password = make_password(form.cleaned_data['password'])
-            user.save()
-            return redirect('/login/')
-    else:
-        form = RegisterForm()
-    return render(request, 'FrontEnd/signup.html', {'form': form})
 
 
 def send_forgotpassword_mail(request):
@@ -249,50 +251,6 @@ def change_password(request):
     else:
         form = ChangePasswordForm()
     return render(request, 'FrontEnd/changepassword.html', {"form": form})
-
-
-#
-# def create_transaction(request):
-#     if request.method == 'POST':
-#         form = PurchaseForm(request.POST)
-#         if form.is_valid():
-#             # Don't save the form yet because we haven't completed the payment
-#             transaction = form.save(commit=False)
-#
-#             # Get the current price of the selected cryptocurrency in CAD
-#             current_price_cad = transaction.currency.current_price_cad
-#
-#             # Calculate the total price
-#             total_price = transaction.amount * current_price_cad
-#
-#             # You may want to store the transaction in the session or a temporary place
-#             request.session['transaction_data'] = {
-#                 'currency_id': transaction.currency.id,
-#                 'amount': str(transaction.amount),
-#                 'total_price': str(total_price)
-#             }
-#
-#             # Redirect to the payment page
-#             return redirect('/payment/')
-#     else:
-#         form = PurchaseForm()
-#     return render(request, 'FrontEnd/purchase_form.html', {'form': form})
-
-#
-# def purchase_crypto(request):
-#     # Retrieve the transaction data from the session
-#     transaction_data = request.session.get('transaction_data', {})
-#
-#     # In a real application, you should clear the session data after use
-#     # request.session.pop('transaction_data', None)
-#
-#     context = {
-#         'total_price': transaction_data.get('total_price'),
-#         'currency_id': transaction_data.get('currency_id'),
-#         'amount': transaction_data.get('amount'),
-#     }
-#     return render(request, 'FrontEnd/payment.html', context)
-
 
 def dynamic_Crypto(request, coin_name):
     coin = get_object_or_404(CryptoCurrency, name=coin_name)
@@ -390,40 +348,6 @@ def user_profile(request):
         form = UserProfileForm(instance=user)
 
     return render(request, 'FrontEnd/profile.html', {'form': form, 'id': "profile-details", 'user': user})
-
-
-# def user_profile(request):
-#     if request.method == 'POST':
-#         value = request.session.get('_user_id')
-#         # Get user details from the retrieved user id
-#         user = UserDetails.objects.get(id=value)
-#         print(user, "getting user")
-#         form = UserProfileForm(request.POST, request.FILES)
-
-#         print(request.POST['avatar'])
-#         value = request.session.get('_user_id')
-#         # Get user details from the retrieved user id
-#         user = UserDetails.objects.get(id=value)
-#         user.first_name = request.POST['firstname']
-#         user.username = request.POST['username']
-#         user.last_name = request.POST['lastname']
-#         if 'id_image' in request.FILES:
-#             user.id_image = request.FILES['id_image']
-#         # if len(request.FILES) != 0:
-#         #     user.id_image = request.FILES['id_image']
-
-#         user.save()
-#         wish_list = user.wishlist
-#         return render(request, 'FrontEnd/profile.html', {'user': user, 'wish_list': wish_list, 'id': "profile-details"})
-#     else:
-#         # Retrieve the user id from the session
-#         value = request.session.get('_user_id')
-#         # Get user details from the retrieved user id
-#         user = UserDetails.objects.get(id=value)
-#         # img = user.objects.filter(file_type='image')
-#         wish_list = user.wishlist
-#         return render(request, 'FrontEnd/profile.html', {'user': user, 'wish_list': wish_list, 'id': "profile-details"})
-#         # return render(request, 'FrontEnd/profile.html', {'user': user})
 
 
 def acc_sec(request):
@@ -551,21 +475,16 @@ def add_money(request):
 
             messages.success(request, "Money added successfully.")
             form = AddMoneyForm()
-            return render(request, 'FrontEnd/profile.html',
-                          {'form': form, 'balance': user_wallet.balance, 'id': "add-money"})
-
-        else:
-            # Render the HTML with an error message
-            messages.error(request, "Error adding money in wallet.")
-            form = AddMoneyForm()
-            return render(request, 'FrontEnd/profile.html',
-                          {'form': form, 'balance': user_wallet.balance, 'id': "add-money"})
+        #
+        # else:
+        #     # Render the HTML with an error message
+        #     messages.error(request, "Error adding money in wallet.")
+        #     form = AddMoneyForm()
 
     else:
         form = AddMoneyForm()
 
-
-        return render(request, 'FrontEnd/profile.html',{'form': form, 'balance': user_wallet.balance, 'id':"add-money"})
+    return render(request, 'FrontEnd/profile.html',{'form': form, 'balance': user_wallet.balance, 'id':"add-money"})
 
 def purchase_currency(request):
     user_id = request.session.get('_user_id')
@@ -609,12 +528,12 @@ def purchase_currency(request):
                 user_wallet.save()
                 user.save()
                 purchase.save()
-                return JsonResponse({'success': True, 'total_amount': total_amount})
+                return JsonResponse({'success': True})
             else:
-                return JsonResponse({'success': False, 'error': 'Insufficient balance'})
+                return JsonResponse({'success': False, 'error': 'Insufficient balance in the wallet'})
         else:
             # Form is not valid, return JsonResponse with error details
-            return JsonResponse({'success': False, 'error': 'Invalid form data'})
+            return JsonResponse({'success': False, 'error': form.errors})
 
     else:
         form = PurchaseForm(user_id)

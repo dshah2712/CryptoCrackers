@@ -1,31 +1,49 @@
+import re
+
 from django import forms
 from .models import UserDetails, CryptoCurrency, Purchase, Transaction
 
 
 
 class RegisterForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(), required=True)
-    password_confirm = forms.CharField(widget=forms.PasswordInput(), label='Confirm Password', required=True)
+    password = forms.CharField(
+        widget=forms.PasswordInput(),
+        required=True,
+        min_length=5,
+        max_length=10,
+        help_text='Your password must be between 5 - 10 characters. It must contain at least one special character, one uppercase letter, one lowercase letter and one numeric digit.'
+    )
+
+    password_confirm = forms.CharField(
+        widget=forms.PasswordInput(),
+        label='Confirm Password',
+        required=True,
+        min_length=5,
+        max_length=10
+    )
 
     class Meta:
         model = UserDetails
         fields = ['first_name', 'last_name', 'username', 'email', 'password']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get('password')
-        password_confirm = cleaned_data.get('password_confirm')
+    def clean_password_confirm(self):
+        password = self.cleaned_data.get('password')
+        password_confirm = self.cleaned_data.get('password_confirm')
 
         if password and password_confirm and password != password_confirm:
-            self.add_error('password_confirm', 'Passwords do not match')
-        if len(password)<5 or len(password)>10:
-            self.add_error('password', 'Length of password should be between 5 and 10 ')
+            raise forms.ValidationError('Passwords do not match')
 
-    def __init__(self, *args, **kwargs):
-        super(RegisterForm, self).__init__(*args, **kwargs)
-        # Add a custom message for the password field
-        self.fields['password'].help_text = 'Your password must be at least 5 characters long and max 10 characters.'
+        return password_confirm
 
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+
+        # Ensure the password contains at least one special character
+        if not re.match(r'^(?=.*[!@#$%^&*()_+\-=\[\]{};:\'",<>./?\\|`~])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{5,10}$',
+                        password):
+            raise forms.ValidationError('Password must meet the specified criteria.')
+
+        return password
 
 class LoginForm(forms.Form):
     username = forms.CharField(required=True)
@@ -85,6 +103,21 @@ class AddMoneyForm(forms.ModelForm):
         model = Transaction
         fields = ['amount']
 
+    widgets = {
+        'amount': forms.NumberInput(),
+    }
+
+    def clean_amount(self):
+        amount = self.cleaned_data['amount']
+        if amount <= 0:
+            raise forms.ValidationError('Amount must be a positive number.')
+
+            # Check if amount has more than 10 digits
+        if len(str(amount)) > 10:
+            raise forms.ValidationError('Amount cannot be greater than 10 digits.')
+
+        return amount
+
 
 class PurchaseForm(forms.ModelForm):
 
@@ -93,23 +126,21 @@ class PurchaseForm(forms.ModelForm):
         fields = ['cryptocurrency', 'quantity']
         widgets = {
             'cryptocurrency': forms.Select(),
-            'quantity': forms.TextInput(),
+            'quantity': forms.NumberInput(),
         }
+
+    def clean_quantity(self):
+        quantity = self.cleaned_data['quantity']
+        if quantity <= 0:
+            raise forms.ValidationError('Quantity must be a positive number.')
+        return quantity
 
     def __init__(self, user_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['cryptocurrency'].queryset = CryptoCurrency.objects.all()
         self.user_id = user_id
 
-    def clean(self):
-        cleaned_data = super().clean()
-        cryptocurrency = cleaned_data.get('cryptocurrency')
-        quantity = cleaned_data.get('quantity')
-        total_amount = cryptocurrency.current_price_cad * quantity
-        cleaned_data['total_amount'] = total_amount
-        return cleaned_data
-
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserDetails
-        fields  = ['username', 'first_name', 'last_name']
+        fields = ['username', 'first_name', 'last_name']

@@ -300,18 +300,12 @@
                             const cryptoPrice = parseFloat(cryptoChoices[selectedIndex-1].price);
                             const quantity = parseFloat(quantityInput.value);
 
-                            console.log('cryptoPrice:', cryptoPrice);
-                            console.log('quantity:', quantity);
-
-                            if (!isNaN(quantity)) {
+                            if (quantity>=0) {
                                 const totalAmount = cryptoPrice * quantity;
-                                console.log('totalAmount:', totalAmount);
                                 document.getElementById('totalAmount').innerText = totalAmount.toFixed(2);
                             } else {
-                                alert('Please enter a valid quantity.');
+                                alert('Please enter a positive quantity.');
                             }
-                        } else {
-                            alert('Please select a cryptocurrency.');
                         }
                     }
                 }
@@ -334,8 +328,8 @@
                                 alert("Purchase successful.");
                                 // Optionally, reset the form
                                 document.getElementById("purchaseForm").reset();
-                            } else {
-                                alert("Insufficient balance to make the purchase.");
+                            } else if (data.error) {
+                                alert( Object.values(data.error).flat().join(''));
                             }
                         })
                         .catch(error => {
